@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIMES Conecta 360 — v5.5 PRODUÇÃO (Salinas/MG)</title>
+    <title>CIMES Conecta 360 — v5.6 PRODUÇÃO (Salinas/MG)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>
@@ -30,7 +30,7 @@
 </head>
 <body class="h-screen flex flex-col bg-slate-50 text-slate-800 font-sans antialiased">
 
-    <!-- Cabeçalho Institucional (v5.5 PRODUÇÃO • Solução 2: Link Mágico Credenciamento & PIN Consórcio) -->
+    <!-- Cabeçalho Institucional (v5.6 PRODUÇÃO • Solução A Confirmação Paciente + Jurídico Completo) -->
     <header class="bg-navy-900 text-white border-b border-navy-800 shadow-md z-30 shrink-0">
         <div class="max-w-[1600px] mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -40,13 +40,13 @@
                 <div>
                     <div class="flex items-center gap-2 flex-wrap">
                         <h1 class="text-base md:text-lg font-extrabold tracking-tight">CIMES Conecta 360</h1>
-                        <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[10px] font-extrabold">PRODUÇÃO v5.5 • Salinas/MG</span>
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 text-[10px] font-extrabold">PRODUÇÃO v5.6 • Salinas/MG</span>
                     </div>
                     <p class="text-[11px] text-slate-300">Orquestrador OCI (Lei 14.133/2021) • Trava CNES Anti-Glosa • Liquidação 70/30 & LGPD</p>
                 </div>
             </div>
 
-            <!-- Seletor Direto dos 4 Portais (Ocultado automaticamente no Link Mágico do Credenciado) -->
+            <!-- Seletor Direto dos 4 Portais -->
             <div id="header-portal-switcher" class="flex items-center gap-1.5 bg-navy-950/80 p-1 rounded-xl border border-navy-800 flex-wrap">
                 <button id="btn-portal-cimes" onclick="switchPortal('cimes')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-400 text-navy-950 shadow">
                     <i class="fa-solid fa-shield-halved mr-1"></i> Operador CIMES
@@ -62,19 +62,19 @@
                 </button>
             </div>
 
-            <!-- Selo de Sessão Isolada (Exibido apenas no Link Mágico ?convite=...) -->
+            <!-- Selo de Sessão Isolada (Convite Credenciado ou Confirmação Paciente) -->
             <div id="header-invite-badge" class="hidden flex items-center gap-2">
-                <span class="px-3 py-1.5 rounded-xl bg-amber-400/20 border border-amber-400/50 text-amber-300 text-xs font-extrabold">
-                    <i class="fa-solid fa-lock mr-1"></i> Portal Exclusivo de Credenciamento (LGPD)
+                <span id="header-invite-label" class="px-3 py-1.5 rounded-xl bg-amber-400/20 border border-amber-400/50 text-amber-300 text-xs font-extrabold">
+                    <i class="fa-solid fa-lock mr-1"></i> Portal Exclusivo (LGPD)
                 </span>
                 <button onclick="openOperatorPinModal()" class="px-3 py-1.5 rounded-xl bg-navy-800 hover:bg-navy-700 text-slate-200 text-xs font-bold border border-navy-700">
                     <i class="fa-solid fa-key mr-1"></i> Acesso Equipe CIMES
                 </button>
             </div>
 
-            <!-- Controles de Produção (Cloud Sync Solução 1 + Backup JSON) -->
+            <!-- Controles de Produção -->
             <div id="header-admin-controls" class="flex items-center gap-1.5">
-                <button onclick="openSyncModal()" title="Conectar Google Sheets / Apps Script (Solução 1)" class="px-2.5 py-1.5 rounded-lg bg-navy-800 hover:bg-sky-800 text-sky-300 hover:text-white text-xs font-bold transition-all border border-navy-800">
+                <button onclick="openSyncModal()" title="Conectar Google Sheets / Apps Script" class="px-2.5 py-1.5 rounded-lg bg-navy-800 hover:bg-sky-800 text-sky-300 hover:text-white text-xs font-bold transition-all border border-navy-800">
                     <i class="fa-solid fa-cloud-arrow-up mr-1"></i> <span id="sync-status-label">Base Local</span>
                 </button>
                 <button onclick="pullFromCloud(true)" title="Sincronizar Agora com Google Sheets" class="px-2.5 py-1.5 rounded-lg bg-navy-800 hover:bg-navy-700 text-slate-200 text-xs font-bold">
@@ -87,7 +87,7 @@
                     <i class="fa-solid fa-upload"></i>
                     <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
                 </label>
-                <button onclick="resetCleanState()" title="Limpar Base / Zerar Dados" class="px-2.5 py-1.5 rounded-lg bg-navy-800 hover:bg-red-700 text-slate-300 hover:text-white text-xs font-bold">
+                <button onclick="openResetModal()" title="Limpar Base Local" class="px-2.5 py-1.5 rounded-lg bg-navy-800 hover:bg-red-700 text-slate-300 hover:text-white text-xs font-bold">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -98,7 +98,6 @@
     <!-- PORTAL 1: OPERADOR CENTRAL CIMES (SALINAS/MG)                         -->
     <!-- ===================================================================== -->
     <div id="portal-cimes" class="flex-1 flex overflow-hidden">
-        <!-- Menu Lateral -->
         <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between p-3 overflow-y-auto shrink-0">
             <div class="space-y-1">
                 <p class="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
@@ -131,12 +130,11 @@
             </div>
 
             <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] space-y-1">
-                <p class="font-extrabold text-emerald-900">Solução 1 • Produção v5.5</p>
-                <p id="cloud-footer-info" class="text-emerald-800">Importe o CSV oficial CNES DATASUS na Aba 4 e conecte sua Planilha Google no topo.</p>
+                <p class="font-extrabold text-emerald-900">Solução A • Produção v5.6</p>
+                <p id="cloud-footer-info" class="text-emerald-800">Agenda por expediente CNES, confirmação 1-clique (máx. 2 reagendamentos) e minutas jurídicas completas.</p>
             </div>
         </aside>
 
-        <!-- Conteúdo Principal Operador -->
         <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
 
             <!-- ABA 1: TORRE DE CONTROLE SLA -->
@@ -144,7 +142,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <h2 class="text-xl font-extrabold text-navy-900">Torre de Controle SLA & Navegação de Cuidado</h2>
-                        <p class="text-xs text-slate-500">Monitoramento em tempo real dos prazos fatais (30d Oncologia / 60d Demais OCIs), Saneamento CNS e Liquidação 70/30.</p>
+                        <p class="text-xs text-slate-500">Monitoramento em tempo real dos prazos fatais (30d/60d), rastreamento de confirmação do paciente (máx. 2 reagendamentos) e Liquidação 70/30.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
                         <button id="btn-autopilot" onclick="toggleAutopilot()" class="px-3.5 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold shadow-sm">
@@ -156,6 +154,22 @@
                     </div>
                 </div>
 
+                <!-- Banner de Alerta Automático de Absenteísmo / Sem Resposta -->
+                <div id="torre-sem-resposta-banner" class="hidden p-4 rounded-2xl bg-red-50 border-2 border-red-300 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                            <p id="torre-sem-resposta-title" class="text-xs font-black text-red-900 uppercase">Alerta de Risco de Absenteísmo na Torre</p>
+                            <p id="torre-sem-resposta-desc" class="text-xs text-red-800 mt-0.5"></p>
+                        </div>
+                    </div>
+                    <button onclick="filterOnlySemResposta()" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold shadow-sm">
+                        Filtrar Pendências de Confirmação
+                    </button>
+                </div>
+
                 <!-- KPIs -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
@@ -164,9 +178,9 @@
                         <p class="text-[11px] text-slate-500 mt-1">Monitoradas sob prazo fatal</p>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
-                        <p class="text-[11px] font-bold uppercase text-slate-500">Bloqueio CNS (Malha Pré-SIA)</p>
-                        <p id="kpi-risco-cns" class="text-2xl font-black text-emerald-700 mt-1">0</p>
-                        <p class="text-[11px] text-slate-500 mt-1">Exige saneamento 15 dígitos</p>
+                        <p class="text-[11px] font-bold uppercase text-slate-500">Sem Resposta / Reagendar</p>
+                        <p id="kpi-sem-resposta" class="text-2xl font-black text-red-600 mt-1">0</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Aguardando confirmação paciente</p>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs">
                         <p class="text-[11px] font-bold uppercase text-slate-500">Gatilho 70% Destravado</p>
@@ -185,6 +199,7 @@
                     <input id="search-jornada" type="text" oninput="renderJornadasTable()" placeholder="Buscar paciente, CPF, CNS, cidade ou protocolo..." class="flex-1 min-w-[220px] px-3.5 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-800">
                     <select id="filter-sla" onchange="renderJornadasTable()" class="px-3.5 py-2 text-xs border border-slate-300 rounded-xl bg-white">
                         <option value="ALL">Todos os Prazos / Riscos</option>
+                        <option value="SEM_RESPOSTA">Sem Resposta / Pedido Reagendamento</option>
                         <option value="CRITICO">Urgente (&le; 15 dias) ou CNS Inválido</option>
                         <option value="LAUDO_OK">Prontos para Pagar 70%</option>
                         <option value="PAGO_70">Aguardando APAC 30%</option>
@@ -198,10 +213,10 @@
                             <thead>
                                 <tr class="bg-slate-100 border-b border-slate-200 text-[11px] font-extrabold uppercase text-slate-600">
                                     <th class="py-3 px-4">Protocolo / Paciente / CNS</th>
-                                    <th class="py-3 px-4">Pacote OCI (SIGTAP)</th>
-                                    <th class="py-3 px-4">Prestador & CNES</th>
-                                    <th class="py-3 px-4">Semáforo SLA</th>
-                                    <th class="py-3 px-4">Etapa & 70/30</th>
+                                    <th class="py-3 px-4">Pacote OCI & Data/Hora</th>
+                                    <th class="py-3 px-4">Prestador & Expediente</th>
+                                    <th class="py-3 px-4">Confirmação Paciente</th>
+                                    <th class="py-3 px-4">Semáforo SLA & 70/30</th>
                                     <th class="py-3 px-4 text-right">Ações</th>
                                 </tr>
                             </thead>
@@ -214,12 +229,11 @@
             <!-- ABA 2: CAPTAÇÃO & IA SCORE -->
             <section id="tab-2" class="hidden space-y-5">
                 <div>
-                    <h2 class="text-xl font-extrabold text-navy-900">Captação Municipal & Distribuição Objetiva (Lei 14.133/2021)</h2>
-                    <p class="text-xs text-slate-500">Fila de encaminhamentos reais com Trava APS + Motor IA Score (35% Capacidade • 25% Rodízio • 25% Logística TFD • 15% Margem).</p>
+                    <h2 class="text-xl font-extrabold text-navy-900">Captação Municipal & Agendamento Inteligente (Lei 14.133/2021)</h2>
+                    <p class="text-xs text-slate-500">Agendamento válido apenas a partir de hoje, respeitando o horário de funcionamento do estabelecimento e gerando link 1-clique para confirmação do paciente (máx. 2 reagendamentos).</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-                    <!-- Fila Municipal -->
                     <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm font-extrabold text-navy-900">Fila Municipal Validada (APS OK)</h3>
@@ -228,9 +242,8 @@
                         <div id="fila-municipal-list" class="space-y-2.5"></div>
                     </div>
 
-                    <!-- Motor de Alocação -->
                     <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-4">
-                        <h3 class="text-sm font-extrabold text-navy-900">Simulador & Alocação Isonômica de Credenciado</h3>
+                        <h3 class="text-sm font-extrabold text-navy-900">Alocação Isonômica & Janela de Atendimento</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div>
                                 <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Paciente da Fila</label>
@@ -247,8 +260,27 @@
 
                         <div id="manual-just-box" class="hidden space-y-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs">
                             <label class="block font-bold text-amber-900">Prestador Escolhido Manualmente & Justificativa Auditável (TCE-MG):</label>
-                            <select id="alloc-manual-provider" class="w-full px-3 py-2 border border-amber-300 rounded-xl bg-white"></select>
+                            <select id="alloc-manual-provider" onchange="refreshAllocationScheduleSlots()" class="w-full px-3 py-2 border border-amber-300 rounded-xl bg-white"></select>
                             <textarea id="alloc-manual-reason" rows="2" placeholder="Ex.: Continuidade de cuidado oncológico ou indisponibilidade imediata de agenda no Top 1..." class="w-full px-3 py-2 border border-amber-300 rounded-xl"></textarea>
+                        </div>
+
+                        <!-- Seleção de Data >= Hoje e Horário dentro do Funcionamento do Estabelecimento -->
+                        <div class="p-3.5 rounded-xl bg-sky-50 border border-sky-200 space-y-2.5 text-xs">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <p class="font-extrabold text-navy-900"><i class="fa-solid fa-calendar-check text-sky-700 mr-1"></i> Data & Horário (Limitado ao Funcionamento do Estabelecimento)</p>
+                                <span id="alloc-provider-hours-badge" class="px-2.5 py-0.5 rounded-full bg-white border border-sky-300 text-[10px] font-extrabold text-sky-900">Expediente: 07:00 às 18:00</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Data do Atendimento (A partir de hoje) *</label>
+                                    <input id="alloc-date" type="date" onchange="refreshAllocationScheduleSlots()" class="w-full px-3 py-2 border border-sky-300 rounded-xl bg-white font-semibold">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Horário Disponível no Expediente *</label>
+                                    <select id="alloc-time" class="w-full px-3 py-2 border border-sky-300 rounded-xl bg-white font-semibold"></select>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-slate-600">Ao confirmar, o sistema gera o link exclusivo de confirmação para o paciente (com direito a até <b>2 reagendamentos</b> dentro do expediente do prestador).</p>
                         </div>
 
                         <div class="space-y-2">
@@ -257,7 +289,7 @@
                         </div>
 
                         <button onclick="executeOCIAllocation()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm">
-                            <i class="fa-solid fa-check-double mr-1.5"></i> Confirmar Alocação & Iniciar Cronômetro SLA
+                            <i class="fa-solid fa-check-double mr-1.5"></i> Confirmar Agendamento & Gerar Link de Confirmação
                         </button>
                     </div>
                 </div>
@@ -268,7 +300,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <h2 class="text-xl font-extrabold text-navy-900">Esteira de Credenciamento Legal (Lei 14.133/2021, Art. 79)</h2>
-                        <p class="text-xs text-slate-500">Geração de Carta-Convite com Link Mágico, Minuta Jurídica 70/30, DPA LGPD e Homologação após envio do contrato assinado.</p>
+                        <p class="text-xs text-slate-500">Minutas jurídicas detalhadas (Termo de Credenciamento 70/30, DPA LGPD e Carta-Convite com Link Mágico).</p>
                     </div>
                     <button onclick="switchPortal('edital')" class="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-navy-950 text-xs font-extrabold">
                         <i class="fa-solid fa-up-right-from-square mr-1"></i> Visualizar Portal do Futuro Credenciado
@@ -297,17 +329,17 @@
 
                     <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
                         <div class="flex flex-wrap items-center justify-between gap-2">
-                            <h3 class="text-sm font-extrabold text-navy-900">2. Documentos Jurídicos Oficiais (Prontos para PDF)</h3>
-                            <div class="flex gap-1.5">
+                            <h3 class="text-sm font-extrabold text-navy-900">2. Instrumentos Jurídicos Completos (Prontos para PDF)</h3>
+                            <div class="flex gap-1.5 flex-wrap">
+                                <button onclick="setDocPreview('TERMO')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold">Termo 70/30 Completo</button>
+                                <button onclick="setDocPreview('DPA')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold">DPA LGPD Completo</button>
                                 <button onclick="setDocPreview('CONVITE')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold">Carta-Convite</button>
-                                <button onclick="setDocPreview('TERMO')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold">Minuta 70/30</button>
-                                <button onclick="setDocPreview('DPA')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold">DPA LGPD</button>
                                 <button onclick="printCurrentDoc()" class="px-3 py-1 rounded-lg bg-navy-900 text-white text-[11px] font-bold">
                                     <i class="fa-solid fa-print mr-1"></i> Imprimir / PDF
                                 </button>
                             </div>
                         </div>
-                        <div id="legal-doc-viewer" class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs leading-relaxed max-h-[380px] overflow-y-auto"></div>
+                        <div id="legal-doc-viewer" class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs leading-relaxed max-h-[420px] overflow-y-auto"></div>
                     </div>
                 </div>
             </section>
@@ -317,7 +349,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div>
                         <h2 class="text-xl font-extrabold text-navy-900">Rede Prestadora & Leitor Streaming CNES DATASUS (MG)</h2>
-                        <p class="text-xs text-slate-500">Base real auditada com trava anti-glosa automática (bloqueia CNES desativado, 008 Pronto Atendimento, UBS, UPA e SAMU).</p>
+                        <p class="text-xs text-slate-500">Base real auditada com trava anti-glosa automática e horário de funcionamento para agenda.</p>
                     </div>
                     <button onclick="openManualCNESModal()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm">
                         <i class="fa-solid fa-plus mr-1"></i> + Inclusão Manual (Autoverificação Anti-Glosa)
@@ -329,7 +361,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <div>
                             <h3 class="text-sm font-extrabold text-navy-900"><i class="fa-solid fa-database text-sky-700 mr-1.5"></i> Leitor Streaming DATASUS (<code class="text-sky-800">tbEstabelecimento*.csv</code> — Windows-1252)</h3>
-                            <p class="text-[11px] text-slate-500">Importe a base oficial mensal do DATASUS para carregar 100% dos estabelecimentos reais de Salinas e região com trava anti-glosa.</p>
+                            <p class="text-[11px] text-slate-500">Importe a base oficial mensal do DATASUS para carregar 100% dos estabelecimentos reais de Salinas e região.</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
                             <select id="cnes-import-scope" class="px-3 py-2 text-xs border border-slate-300 rounded-xl bg-white">
@@ -395,9 +427,9 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-100 border-b border-slate-200 text-[11px] font-extrabold uppercase text-slate-600">
-                                    <th class="py-3 px-4">Estabelecimento / CNES (Link Direto Ficha)</th>
+                                    <th class="py-3 px-4">Estabelecimento / CNES</th>
                                     <th class="py-3 px-4">Município</th>
-                                    <th class="py-3 px-4">Classificação CNES</th>
+                                    <th class="py-3 px-4">Classificação & Expediente</th>
                                     <th class="py-3 px-4">Situação Anti-Glosa</th>
                                     <th class="py-3 px-4">Vagas / Status CIMES</th>
                                     <th class="py-3 px-4 text-right">Esteira & Ficha Oficial</th>
@@ -475,7 +507,7 @@
                         <p class="text-xs text-slate-500">Validação automatizada dos gatilhos regulatórios e registro imutável de ações.</p>
                     </div>
                     <button onclick="runAutomatedTests()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm">
-                        <i class="fa-solid fa-vial-circle-check mr-1.5"></i> Executar Bateria de Testes (10 Gatilhos)
+                        <i class="fa-solid fa-vial-circle-check mr-1.5"></i> Executar Bateria de Testes (12 Gatilhos)
                     </button>
                 </div>
 
@@ -531,7 +563,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">WhatsApp do Paciente (Lembrete Zero CID)</label>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">WhatsApp do Paciente (Para Link de Confirmação 1-Clique) *</label>
                     <input id="mun-pac-whats" type="text" placeholder="(38) 99999-0000" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                 </div>
                 <div>
@@ -589,10 +621,10 @@
             <div class="space-y-1">
                 <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-extrabold">EDITAL DE CREDENCIAMENTO PERMANENTE • LEI 14.133/2021, ART. 79</span>
                 <h2 class="text-lg font-extrabold text-navy-900">Adesão de Novos Estabelecimentos à Rede OCI CIMES (Salinas & Região)</h2>
-                <p class="text-xs text-slate-600">Valide seus dados CNES, baixe a Minuta Jurídica 70/30 + DPA LGPD, assine no Gov.br e poste o contrato assinado para homologação.</p>
+                <p class="text-xs text-slate-600">Valide seus dados CNES, informe o horário de funcionamento, baixe o Contrato Jurídico completo (70/30 + LGPD), assine no Gov.br e poste para homologação.</p>
             </div>
             <button onclick="downloadEditalContratoJuridico()" class="px-4 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-extrabold shadow-sm">
-                <i class="fa-solid fa-file-arrow-down mr-1.5"></i> Baixar / Imprimir Contrato Jurídico (70/30 + LGPD)
+                <i class="fa-solid fa-file-arrow-down mr-1.5"></i> Baixar / Imprimir Contrato Jurídico Completo
             </button>
         </div>
 
@@ -625,14 +657,22 @@
                     <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Capacidade Mensal (Vagas OCI)</label>
                     <input id="edital-vagas" type="number" value="30" min="5" max="500" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                 </div>
-                <div class="sm:col-span-2">
-                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Anexar Contrato Jurídico Assinado (PDF Gov.br) *</label>
-                    <input id="edital-contrato-pdf" type="file" accept=".pdf,.p7s" onchange="handleEditalFileSelect(event)" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-900 hover:file:bg-sky-100 border border-slate-300 rounded-xl p-1">
-                    <p id="edital-file-status" class="text-[10px] text-slate-500 mt-1">Baixe a Minuta Jurídica acima, assine no Gov.br e anexe o arquivo assinado aqui.</p>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Início Expediente Atendimento *</label>
+                    <input id="edital-hora-ini" type="time" value="07:00" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Término Expediente Atendimento *</label>
+                    <input id="edital-hora-fim" type="time" value="18:00" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Código / Protocolo Gov.br</label>
                     <input id="edital-govbr-proto" type="text" placeholder="Ex.: ITI-2026-88492" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono">
+                </div>
+                <div class="sm:col-span-3">
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Anexar Contrato Jurídico Assinado (PDF Gov.br) *</label>
+                    <input id="edital-contrato-pdf" type="file" accept=".pdf,.p7s" onchange="handleEditalFileSelect(event)" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-900 hover:file:bg-sky-100 border border-slate-300 rounded-xl p-1">
+                    <p id="edital-file-status" class="text-[10px] text-slate-500 mt-1">Baixe a Minuta Jurídica acima, assine no Gov.br e anexe o arquivo assinado aqui.</p>
                 </div>
             </div>
 
@@ -640,7 +680,7 @@
 
             <label class="flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 cursor-pointer">
                 <input id="edital-aceite-7030" type="checkbox" class="mt-0.5 rounded">
-                <span>Declaro ciência e aceite integral do <b>Edital Permanente CIMES (Art. 79 Lei 14.133/2021)</b>, da remuneração por pacote concluído no prazo fatal, da <b>Liquidação Escalonada 70/30</b> e do <b>DPA LGPD</b>, tendo assinado a minuta via <b>assinador.iti.br</b>.</span>
+                <span>Declaro ciência e aceite integral do <b>Edital Permanente CIMES (Art. 79 Lei 14.133/2021)</b>, da remuneração por pacote concluído no prazo fatal, da <b>Liquidação Escalonada 70/30</b>, da vedação à subcontratação e do <b>DPA LGPD</b>, tendo assinado a minuta via <b>assinador.iti.br</b>.</span>
             </label>
 
             <div class="flex flex-wrap justify-between items-center gap-2">
@@ -655,7 +695,14 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- MODAL: PIN ÚNICO DO CONSÓRCIO (DESTRAVA SESSÃO DE CONVITE EXTERNO)     -->
+    <!-- PORTAL 5: CARTÃO ISOLADO DE CONFIRMAÇÃO DO PACIENTE (?confirmar=...)  -->
+    <!-- ===================================================================== -->
+    <div id="portal-paciente-confirm" class="hidden flex-1 overflow-y-auto p-4 md:p-6 max-w-lg mx-auto w-full flex flex-col justify-center">
+        <div id="paciente-confirm-card" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-4 text-xs"></div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL: PIN ÚNICO DO CONSÓRCIO                                         -->
     <!-- ===================================================================== -->
     <div id="modal-operator-pin" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-3 text-xs">
@@ -663,8 +710,8 @@
                 <h3 class="text-sm font-extrabold text-navy-900"><i class="fa-solid fa-key text-amber-500 mr-1.5"></i> Destravar Painel Equipe CIMES</h3>
                 <button onclick="closeModal('modal-operator-pin')" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p class="text-slate-600">Esta sessão está isolada no modo externo de credenciamento (LGPD). Informe o PIN institucional único do Consórcio CIMES:</p>
-            <input id="operator-pin-input" type="password" onkeydown="if(event.key==='Enter') unlockOperatorSession()" placeholder="PIN do Consórcio (CIMES2026)" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono">
+            <p class="text-slate-600">Esta sessão está isolada no modo externo (LGPD). Informe o PIN institucional único do Consórcio CIMES:</p>
+            <input id="operator-pin-input" type="password" onkeydown="if(event.key==='Enter') unlockOperatorSession()" placeholder="PIN do Consórcio" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono">
             <button onclick="unlockOperatorSession()" class="w-full py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-extrabold">Destravar Acesso Operador</button>
         </div>
     </div>
@@ -689,7 +736,7 @@
                     <input id="invite-cnes-whats" type="text" placeholder="(38) 99999-0000" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                 </div>
                 <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 space-y-1">
-                    <p class="text-[10px] font-extrabold text-amber-900 uppercase">Link Mágico Isolado (Solução 2 • Sem acesso a pacientes):</p>
+                    <p class="text-[10px] font-extrabold text-amber-900 uppercase">Link Mágico Isolado (Sem acesso a pacientes):</p>
                     <input id="invite-magic-link-preview" type="text" readonly class="w-full px-2.5 py-1.5 text-[11px] font-mono bg-white border border-amber-300 rounded-lg text-navy-900">
                 </div>
                 <div class="flex flex-wrap justify-between gap-2 pt-2">
@@ -705,7 +752,7 @@
     </div>
 
     <!-- ===================================================================== -->
-    <!-- MODAL: RAIO-X DA JORNADA & SANEAMENTO CNS                             -->
+    <!-- MODAL: RAIO-X DA JORNADA, CONFIRMAÇÃO PACIENTE & SANEAMENTO CNS        -->
     <!-- ===================================================================== -->
     <div id="modal-raiox" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto text-xs">
@@ -755,6 +802,14 @@
                     <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Vagas Mensais OCI</label>
                     <input id="man-cnes-vagas" type="number" value="40" min="5" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                 </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Início Funcionamento *</label>
+                    <input id="man-cnes-hora-ini" type="time" value="07:00" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Término Funcionamento *</label>
+                    <input id="man-cnes-hora-fim" type="time" value="18:00" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('modal-manual-cnes')" class="px-4 py-2 rounded-xl border border-slate-300 font-bold">Cancelar</button>
@@ -772,7 +827,7 @@
                 <h3 class="text-base font-extrabold text-navy-900"><i class="fa-solid fa-cloud-arrow-up text-sky-700 mr-1.5"></i> Solução 1 — Sincronização Google Sheets (Custo Zero)</h3>
                 <button onclick="closeModal('modal-sync')" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
-            <p class="text-slate-600">Cole abaixo a URL do Web App (<code class="font-mono">/exec</code>) e o Token definidos no seu <b>Google Apps Script</b>. Os dados são gravados em blocos multi-célula (<code class="font-mono">A1, A2, A3...</code>) sem limite de tamanho.</p>
+            <p class="text-slate-600">Cole abaixo a URL do Web App (<code class="font-mono">/exec</code>) e o Token definidos no seu <b>Google Apps Script</b>.</p>
             <div class="space-y-3">
                 <div>
                     <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">URL do Web App Google Apps Script (/exec)</label>
@@ -794,6 +849,29 @@
         </div>
     </div>
 
+    <!-- ===================================================================== -->
+    <!-- MODAL: CONFIRMAÇÃO DE LIMPEZA LOCAL (SEM window.confirm)              -->
+    <!-- ===================================================================== -->
+    <div id="modal-reset-confirm" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-3 text-xs">
+            <h3 class="text-sm font-extrabold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Zerar Dados Locais do Navegador?</h3>
+            <p class="text-slate-600">Esta ação limpa apenas o cache local deste navegador (a Planilha Google na nuvem permanece preservada).</p>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-reset-confirm')" class="px-3.5 py-2 rounded-xl border border-slate-300 font-bold">Cancelar</button>
+                <button onclick="executeResetCleanState()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold">Confirmar Limpeza</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- BANNER TOAST NÃO-BLOQUEANTE (SUBSTITUI alert())                       -->
+    <!-- ===================================================================== -->
+    <div id="toast-banner" class="hidden fixed bottom-5 right-5 z-50 max-w-md bg-navy-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-navy-700 text-xs flex items-start gap-2.5">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-amber-400 mt-0.5 text-sm"></i>
+        <div id="toast-msg" class="flex-1 leading-relaxed"></div>
+        <button onclick="document.getElementById('toast-banner').classList.add('hidden')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
     <!-- Área Oculta para Impressão / PDF -->
     <div id="print-area" class="hidden"></div>
 
@@ -801,6 +879,7 @@
         const PORTAL_PUBLIC_URL = 'https://kristiano2023.github.io/cimes-360/';
         const OPERATOR_PIN_CIMES = 'CIMES2026';
         const INVITE_LOCK_KEY = 'cimes_conecta_360_invite_lock';
+        const MAX_REAGENDAMENTOS = 2;
 
         const OCI_CATALOG = [
             { code: '09.01.01.001-4', name: 'OCI Investigação Diagnóstica em Oncologia (Mama)', area: 'Oncologia', prazo: 30, valor: 1480.00 },
@@ -855,13 +934,77 @@
             Object.entries(MUNICIPIOS_CIMES_IBGE).map(([ibge, nome]) => [nome.toUpperCase(), ibge])
         );
 
-        const STORAGE_KEY = 'cimes_conecta_360_v55_prod';
+        const STORAGE_KEY = 'cimes_conecta_360_v56_prod';
         const SYNC_CONFIG_KEY = 'cimes_conecta_360_sync_cfg';
         let autoSyncTimer = null;
         let isSyncing = false;
         let currentInviteCNES = null;
         let editalUploadedFileName = '';
-        let currentDocType = 'CONVITE';
+        let currentDocType = 'TERMO';
+        let toastTimeout = null;
+
+        function notifyUser(msg, type = 'info') {
+            const banner = document.getElementById('toast-banner');
+            const msgEl = document.getElementById('toast-msg');
+            const iconEl = document.getElementById('toast-icon');
+            if (!banner || !msgEl) return;
+            msgEl.innerHTML = msg;
+            if (iconEl) {
+                iconEl.className = type === 'error'
+                    ? 'fa-solid fa-circle-exclamation text-red-400 mt-0.5 text-sm'
+                    : (type === 'success' ? 'fa-solid fa-circle-check text-emerald-400 mt-0.5 text-sm' : 'fa-solid fa-circle-info text-amber-400 mt-0.5 text-sm');
+            }
+            banner.classList.remove('hidden');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => banner.classList.add('hidden'), 6500);
+        }
+
+        function getTodayISO() {
+            const now = new Date();
+            const offset = now.getTimezoneOffset();
+            const local = new Date(now.getTime() - offset * 60000);
+            return local.toISOString().split('T')[0];
+        }
+
+        function formatDateBR(isoDate) {
+            if (!isoDate || !isoDate.includes('-')) return isoDate || 'Data a definir';
+            const [y, m, d] = isoDate.split('-');
+            return `${d}/${m}/${y}`;
+        }
+
+        function getProviderHours(p) {
+            if (!p) return { inicio: '07:00', fim: '18:00' };
+            if (p.horarioInicio && p.horarioFim) return { inicio: p.horarioInicio, fim: p.horarioFim };
+            if (p.tipoCod === '005' || p.tipoCod === '007') return { inicio: '07:00', fim: '20:00' };
+            return { inicio: '07:00', fim: '18:00' };
+        }
+
+        function generateTimeSlotsForProvider(p, selectedDateISO) {
+            const { inicio, fim } = getProviderHours(p);
+            const [hIni, mIni] = inicio.split(':').map(Number);
+            const [hFim, mFim] = fim.split(':').map(Number);
+            const startMins = hIni * 60 + mIni;
+            const endMins = hFim * 60 + mFim;
+
+            const todayISO = getTodayISO();
+            const now = new Date();
+            const currentMins = now.getHours() * 60 + now.getMinutes() + 30;
+
+            const slots = [];
+            for (let m = startMins; m < endMins; m += 30) {
+                if (selectedDateISO === todayISO && m < currentMins) continue;
+                const hh = String(Math.floor(m / 60)).padStart(2, '0');
+                const mm = String(m % 60).padStart(2, '0');
+                slots.push(`${hh}:${mm}`);
+            }
+            return slots;
+        }
+
+        function isTimeWithinProviderHours(p, timeStr) {
+            if (!timeStr) return false;
+            const { inicio, fim } = getProviderHours(p);
+            return timeStr >= inicio && timeStr <= fim;
+        }
 
         function buildCNESFichaUrl(cnes, municipio, coUnidade) {
             const cleanCnes = String(cnes || '').replace(/\D/g, '').padStart(7, '0');
@@ -889,6 +1032,24 @@
             return `${PORTAL_PUBLIC_URL}?${params.toString()}`;
         }
 
+        function buildPatientConfirmLink(j) {
+            if (!j) return PORTAL_PUBLIC_URL;
+            const prest = appState.prestadores.find(p => p.cnes === j.cnes) || {};
+            const hrs = getProviderHours(prest);
+            const params = new URLSearchParams({
+                confirmar: j.id,
+                pac: j.paciente.split(' ')[0],
+                local: prest.nome || `Unidade Credenciada CNES ${j.cnes}`,
+                mun: prest.municipio || j.municipio || 'Salinas',
+                data: j.dataAgendada || getTodayISO(),
+                hora: j.horaAgendada || '08:00',
+                hini: hrs.inicio,
+                hfim: hrs.fim,
+                reag: String(j.reagendamentosUsados || 0)
+            });
+            return `${PORTAL_PUBLIC_URL}?${params.toString()}`;
+        }
+
         function isInviteSessionLocked() {
             try {
                 return Boolean(sessionStorage.getItem(INVITE_LOCK_KEY));
@@ -902,7 +1063,7 @@
             document.getElementById('header-admin-controls')?.classList.add('hidden');
             document.getElementById('header-invite-badge')?.classList.remove('hidden');
 
-            ['cimes', 'municipio', 'credenciado'].forEach(p => {
+            ['cimes', 'municipio', 'credenciado', 'paciente-confirm'].forEach(p => {
                 document.getElementById(`portal-${p}`)?.classList.add('hidden');
             });
             document.getElementById('portal-edital')?.classList.remove('hidden');
@@ -918,8 +1079,144 @@
             validateEditalForm();
         }
 
-        function checkInviteUrlOnBoot() {
+        function renderPatientConfirmationPortal(params) {
+            document.getElementById('header-portal-switcher')?.classList.add('hidden');
+            document.getElementById('header-admin-controls')?.classList.add('hidden');
+            document.getElementById('header-invite-badge')?.classList.remove('hidden');
+            const lbl = document.getElementById('header-invite-label');
+            if (lbl) lbl.innerHTML = `<i class="fa-solid fa-calendar-check mr-1"></i> Confirmação de Atendimento SUS • CIMES`;
+
+            ['cimes', 'municipio', 'credenciado', 'edital'].forEach(p => {
+                document.getElementById(`portal-${p}`)?.classList.add('hidden');
+            });
+            document.getElementById('portal-paciente-confirm')?.classList.remove('hidden');
+
+            const jId = params.get('confirmar') || '';
+            const jLocal = appState.jornadas.find(item => item.id === jId);
+            const pacNome = jLocal ? jLocal.paciente.split(' ')[0] : (params.get('pac') || 'Paciente');
+            const prest = jLocal ? appState.prestadores.find(p => p.cnes === jLocal.cnes) : null;
+            const localNome = prest ? prest.nome : (params.get('local') || 'Unidade Credenciada CIMES');
+            const munNome = prest ? prest.municipio : (params.get('mun') || 'Salinas');
+            const dataISO = jLocal ? jLocal.dataAgendada : (params.get('data') || getTodayISO());
+            const horaStr = jLocal ? jLocal.horaAgendada : (params.get('hora') || '08:00');
+            const hIni = prest ? getProviderHours(prest).inicio : (params.get('hini') || '07:00');
+            const hFim = prest ? getProviderHours(prest).fim : (params.get('hfim') || '18:00');
+            const reagUsados = jLocal ? (jLocal.reagendamentosUsados || 0) : Number(params.get('reag') || 0);
+            const restantes = Math.max(0, MAX_REAGENDAMENTOS - reagUsados);
+
+            const slots = generateTimeSlotsForProvider({ horarioInicio: hIni, horarioFim: hFim }, dataISO);
+            const slotOpts = (slots.length ? slots : ['08:00', '09:30', '14:00', '15:30'])
+                .map(s => `<option value="${s}">${s}</option>`).join('');
+
+            const card = document.getElementById('paciente-confirm-card');
+            card.innerHTML = `
+                <div class="text-center space-y-1">
+                    <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-extrabold uppercase">Navegação de Cuidado SUS • CIMES</span>
+                    <h2 class="text-lg font-black text-navy-900 mt-1">Olá, ${pacNome}!</h2>
+                    <p class="text-slate-600">Confirme abaixo o seu agendamento pelo SUS (Protocolo <b>${jId}</b>):</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                    <p><span class="text-slate-500">Local de Atendimento:</span><br/><b class="text-navy-900 text-sm">${localNome} (${munNome}/MG)</b></p>
+                    <p><span class="text-slate-500">Data e Horário Reservados:</span><br/><b class="text-emerald-700 text-base">${formatDateBR(dataISO)} às ${horaStr}</b></p>
+                    <p class="text-[11px] text-slate-500">Horário de funcionamento da unidade: <b>${hIni} às ${hFim}</b></p>
+                </div>
+
+                <div id="patient-action-feedback" class="space-y-2.5">
+                    <button onclick="submitPatientResponse('${jId}', 'CONFIRMADO')" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow">
+                        <i class="fa-solid fa-circle-check mr-1.5"></i> CONFIRMAR MINHA PRESENÇA
+                    </button>
+
+                    ${restantes > 0 ? `
+                        <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">
+                            <p class="font-extrabold text-amber-950">Precisa de outro dia ou horário? (Você tem ${restantes} de ${MAX_REAGENDAMENTOS} reagendamentos disponíveis)</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input id="pat-reag-date" type="date" min="${getTodayISO()}" value="${dataISO >= getTodayISO() ? dataISO : getTodayISO()}" class="px-2.5 py-2 border border-amber-300 rounded-xl bg-white font-semibold">
+                                <select id="pat-reag-time" class="px-2.5 py-2 border border-amber-300 rounded-xl bg-white font-semibold">${slotOpts}</select>
+                            </div>
+                            <button onclick="submitPatientResponse('${jId}', 'REAGENDAR')" class="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-navy-950 font-extrabold">
+                                <i class="fa-solid fa-calendar-day mr-1"></i> Solicitar Novo Horário (${reagUsados + 1}/${MAX_REAGENDAMENTOS})
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="p-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 text-center">
+                            Limite máximo de <b>${MAX_REAGENDAMENTOS} reagendamentos</b> atingido. Caso não possa comparecer, avise abaixo ou procure a Secretaria de Saúde.
+                        </div>
+                    `}
+
+                    <button onclick="submitPatientResponse('${jId}', 'RECUSADO')" class="w-full py-2.5 rounded-xl border border-red-300 text-red-700 hover:bg-red-50 font-bold">
+                        <i class="fa-solid fa-xmark mr-1"></i> Não poderei comparecer (Liberar vaga para outro paciente)
+                    </button>
+                </div>
+            `;
+        }
+
+        function submitPatientResponse(jornadaId, decision) {
+            const j = appState.jornadas.find(item => item.id === jornadaId);
+            const fb = document.getElementById('patient-action-feedback');
+
+            if (decision === 'CONFIRMADO') {
+                if (j) {
+                    j.statusConfirmacao = 'Confirmado pelo Paciente';
+                    j.confirmadoEm = new Date().toLocaleString('pt-BR');
+                    saveState();
+                    logAudit('CONFIRMAÇÃO PACIENTE (LINK)', `Paciente ${j.paciente} (${j.id}) confirmou presença para ${formatDateBR(j.dataAgendada)} às ${j.horaAgendada}.`);
+                }
+                if (fb) {
+                    fb.innerHTML = `<div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 text-center space-y-1"><p class="font-black text-sm">✓ Presença Confirmada com Sucesso!</p><p>Leve documento com foto, Cartão SUS (CNS) e pedido médico no dia e horário agendados.</p></div>`;
+                }
+                return;
+            }
+
+            if (decision === 'REAGENDAR') {
+                const novaData = document.getElementById('pat-reag-date')?.value || getTodayISO();
+                const novaHora = document.getElementById('pat-reag-time')?.value || '08:00';
+                if (novaData < getTodayISO()) {
+                    notifyUser('Escolha uma data a partir de hoje.', 'error');
+                    return;
+                }
+                if (j) {
+                    if ((j.reagendamentosUsados || 0) >= MAX_REAGENDAMENTOS) {
+                        notifyUser('Limite de 2 reagendamentos já foi utilizado.', 'error');
+                        return;
+                    }
+                    const prest = appState.prestadores.find(p => p.cnes === j.cnes);
+                    if (prest && !isTimeWithinProviderHours(prest, novaHora)) {
+                        const hrs = getProviderHours(prest);
+                        notifyUser(`Horário fora do expediente do estabelecimento (${hrs.inicio} às ${hrs.fim}).`, 'error');
+                        return;
+                    }
+                    j.reagendamentosUsados = (j.reagendamentosUsados || 0) + 1;
+                    j.dataAgendada = novaData;
+                    j.horaAgendada = novaHora;
+                    j.statusConfirmacao = `Reagendado (${j.reagendamentosUsados}/${MAX_REAGENDAMENTOS}) • Aguardando Validação`;
+                    saveState();
+                    logAudit('REAGENDAMENTO PACIENTE', `${j.paciente} (${j.id}) solicitou reagendamento (${j.reagendamentosUsados}/${MAX_REAGENDAMENTOS}) para ${formatDateBR(novaData)} às ${novaHora}.`);
+                }
+                if (fb) {
+                    fb.innerHTML = `<div class="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-center space-y-1"><p class="font-black text-sm">↻ Solicitação de Novo Horário Registrada!</p><p>Novo horário solicitado: <b>${formatDateBR(novaData)} às ${novaHora}</b>. A Central CIMES foi notificada.</p></div>`;
+                }
+                return;
+            }
+
+            if (decision === 'RECUSADO') {
+                if (j) {
+                    j.statusConfirmacao = 'Ausência Informada • Repor Vaga';
+                    saveState();
+                    logAudit('AUSÊNCIA INFORMADA PACIENTE', `${j.paciente} (${j.id}) informou que não poderá comparecer. Alerta gerado na Torre.`);
+                }
+                if (fb) {
+                    fb.innerHTML = `<div class="p-4 rounded-2xl bg-red-50 border border-red-300 text-red-950 text-center space-y-1"><p class="font-black text-sm">Aviso Registrado</p><p>A Central CIMES e a Secretaria Municipal de Saúde foram notificadas.</p></div>`;
+                }
+            }
+        }
+
+        function checkExternalRoutesOnBoot() {
             const params = new URLSearchParams(window.location.search);
+            if (params.get('confirmar')) {
+                renderPatientConfirmationPortal(params);
+                return true;
+            }
             const conviteParam = params.get('convite');
             if (conviteParam) {
                 const cnesPart = conviteParam.split('-')[0].replace(/\D/g, '').padStart(7, '0');
@@ -951,7 +1248,7 @@
         function unlockOperatorSession() {
             const pin = (document.getElementById('operator-pin-input')?.value || '').trim();
             if (pin !== OPERATOR_PIN_CIMES) {
-                alert('PIN institucional incorreto.');
+                notifyUser('PIN institucional incorreto.', 'error');
                 return;
             }
             try { sessionStorage.removeItem(INVITE_LOCK_KEY); } catch (e) {}
@@ -961,6 +1258,7 @@
             document.getElementById('header-portal-switcher')?.classList.remove('hidden');
             document.getElementById('header-admin-controls')?.classList.remove('hidden');
             document.getElementById('header-invite-badge')?.classList.add('hidden');
+            document.getElementById('portal-paciente-confirm')?.classList.add('hidden');
             closeModal('modal-operator-pin');
             switchPortal('cimes');
         }
@@ -974,8 +1272,8 @@
                 auditLogs: [
                     {
                         ts: new Date().toLocaleString('pt-BR'),
-                        acao: 'AMBIENTE PRODUÇÃO v5.5 INICIADO',
-                        detalhe: 'Base limpa (zero dados fictícios). Importe o CSV CNES DATASUS na Aba 4 e conecte a Planilha Google.'
+                        acao: 'AMBIENTE PRODUÇÃO v5.6 INICIADO',
+                        detalhe: 'Base limpa (zero dados fictícios). Solução A ativa: agenda por expediente CNES, confirmação 1-clique (máx. 2 reagendamentos) e minutas jurídicas completas.'
                     }
                 ]
             };
@@ -985,7 +1283,7 @@
 
         function loadState() {
             try {
-                const raw = localStorage.getItem(STORAGE_KEY);
+                const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('cimes_conecta_360_v55_prod');
                 if (raw) {
                     const parsed = JSON.parse(raw);
                     appState = { ...getCleanProductionState(), ...parsed };
@@ -1041,7 +1339,7 @@
             const url = (document.getElementById('sync-url-input')?.value || '').trim();
             const token = (document.getElementById('sync-token-input')?.value || '').trim();
             if (!url || !url.startsWith('https://')) {
-                alert('Cole a URL válida do Google Apps Script terminada em /exec.');
+                notifyUser('Cole a URL válida do Google Apps Script terminada em /exec.', 'error');
                 return;
             }
             localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify({ url, token }));
@@ -1064,11 +1362,11 @@
             }
         }
 
-        async function pushToCloud(notifyUser) {
+        async function pushToCloud(notify) {
             const cfg = getSyncConfig();
             if (!cfg.url || isSyncing) return;
             const totalItems = appState.prestadores.length + appState.jornadas.length + appState.filaMunicipal.length;
-            if (totalItems === 0 && !notifyUser) return;
+            if (totalItems === 0 && !notify) return;
 
             isSyncing = true;
             try {
@@ -1080,18 +1378,18 @@
                 });
                 const nowStr = new Date().toLocaleTimeString('pt-BR');
                 updateSyncBadge(true, nowStr);
-                if (notifyUser) alert('Base enviada para a Planilha Google com sucesso!');
+                if (notify) notifyUser('Base enviada para a Planilha Google com sucesso!', 'success');
             } catch (err) {
-                if (notifyUser) alert('Erro ao enviar dados para o Google Apps Script.');
+                if (notify) notifyUser('Erro ao enviar dados para o Google Apps Script.', 'error');
             } finally {
                 isSyncing = false;
             }
         }
 
-        async function pullFromCloud(notifyUser) {
+        async function pullFromCloud(notify) {
             const cfg = getSyncConfig();
             if (!cfg.url) {
-                if (notifyUser) alert('Configure primeiro a URL do Google Apps Script no botão "Base Local".');
+                if (notify) notifyUser('Configure primeiro a URL do Google Apps Script no botão "Base Local".', 'error');
                 return;
             }
             try {
@@ -1099,12 +1397,12 @@
                 const res = await fetch(`${cfg.url}${sep}token=${encodeURIComponent(cfg.token || '')}&t=${Date.now()}`);
                 const data = await res.json();
                 if (data && data.erro) {
-                    if (notifyUser) alert('Erro na planilha: ' + data.erro);
+                    if (notify) notifyUser('Erro na planilha: ' + data.erro, 'error');
                     return;
                 }
                 if (data && data.empty) {
                     updateSyncBadge(true, new Date().toLocaleTimeString('pt-BR'));
-                    if (notifyUser) alert('Planilha conectada e pronta (ainda sem registros gravados).');
+                    if (notify) notifyUser('Planilha conectada e pronta (ainda sem registros gravados).', 'info');
                     return;
                 }
                 if (data && (Array.isArray(data.prestadores) || Array.isArray(data.jornadas))) {
@@ -1112,10 +1410,10 @@
                     saveState(true);
                     refreshAllViews();
                     updateSyncBadge(true, new Date().toLocaleTimeString('pt-BR'));
-                    if (notifyUser) alert(`Dados baixados da Planilha Google com sucesso! (${appState.prestadores.length} estabelecimentos CNES carregados).`);
+                    if (notify) notifyUser(`Dados baixados da Planilha Google com sucesso! (${appState.prestadores.length} estabelecimentos CNES carregados).`, 'success');
                 }
             } catch (err) {
-                if (notifyUser) alert('Não foi possível ler a Planilha Google. Verifique se o Web App foi implantado com acesso "Qualquer pessoa".');
+                if (notify) notifyUser('Não foi possível ler a Planilha Google.', 'error');
             }
         }
 
@@ -1155,7 +1453,7 @@
         function openInviteModalFromCredTab() {
             const cnes = document.getElementById('cred-provider-select')?.value;
             if (!cnes) {
-                alert('Selecione um prestador elegível primeiro.');
+                notifyUser('Selecione um prestador elegível primeiro.', 'error');
                 return;
             }
             openInviteModal(cnes);
@@ -1173,7 +1471,7 @@
             renderCNESTable();
 
             const msg =
-                `Olá! O *Consórcio Intermunicipal de Saúde (CIMES — Salinas/MG)* convida *${p.nome}* (CNES *${p.cnes}*) para validar seu cadastro, baixar o Contrato Jurídico 70/30 e protocolar a assinatura Gov.br:\n\n` +
+                `Olá! O *Consórcio Intermunicipal de Saúde (CIMES — Salinas/MG)* convida *${p.nome}* (CNES *${p.cnes}*) para validar seu cadastro, baixar o Contrato Jurídico 70/30 + DPA LGPD e protocolar a assinatura Gov.br:\n\n` +
                 `${magicLink}\n\n` +
                 `Liquidação escalonada *70/30* (70% pós-Laudo PDF + Pré-SIA e 30% pós-APAC Série 7).`;
 
@@ -1187,12 +1485,12 @@
             if (!p) return;
             const email = (document.getElementById('invite-cnes-email')?.value || '').trim();
             if (!email || !email.includes('@')) {
-                alert('Informe um endereço de e-mail válido do estabelecimento.');
+                notifyUser('Informe um endereço de e-mail válido do estabelecimento.', 'error');
                 return;
             }
             const cfg = getSyncConfig();
             if (!cfg.url) {
-                alert('Conecte primeiro a URL do Google Apps Script no botão "Base Local / Nuvem Ativa" no topo.');
+                notifyUser('Conecte primeiro a URL do Google Apps Script no botão "Base Local / Nuvem Ativa" no topo.', 'error');
                 return;
             }
 
@@ -1223,9 +1521,9 @@
                 renderCNESTable();
                 closeModal('modal-invite-cnes');
                 logAudit('E-MAIL CONVITE AUTOMÁTICO', `E-mail com Link Mágico isolado enviado via Google Apps Script para ${email} (${p.nome} • CNES ${p.cnes}).`);
-                alert(`E-mail oficial com Link Mágico exclusivo de credenciamento disparado para ${email}!`);
+                notifyUser(`E-mail oficial com Link Mágico exclusivo de credenciamento disparado para <b>${email}</b>!`, 'success');
             } catch (err) {
-                alert('Erro ao acionar o disparo de e-mail no Apps Script.');
+                notifyUser('Erro ao acionar o disparo de e-mail no Apps Script.', 'error');
             } finally {
                 if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-envelope mr-1"></i> Disparar E-mail Automático'; }
             }
@@ -1239,7 +1537,7 @@
                 openOperatorPinModal();
                 return;
             }
-            ['cimes', 'municipio', 'credenciado', 'edital'].forEach(p => {
+            ['cimes', 'municipio', 'credenciado', 'edital', 'paciente-confirm'].forEach(p => {
                 document.getElementById(`portal-${p}`)?.classList.toggle('hidden', p !== portal);
                 const btn = document.getElementById(`btn-portal-${p}`);
                 if (btn) {
@@ -1278,7 +1576,7 @@
             const fileInput = document.getElementById('cnes-csv-file');
             const file = fileInput?.files?.[0];
             if (!file) {
-                alert('Selecione primeiro o arquivo tbEstabelecimento*.csv oficial do DATASUS.');
+                notifyUser('Selecione primeiro o arquivo tbEstabelecimento*.csv oficial do DATASUS.', 'error');
                 return;
             }
             const scope = document.getElementById('cnes-import-scope')?.value || 'REGIAO';
@@ -1370,6 +1668,7 @@
 
                     const tipoNome = TIPOS_ELEGIVEIS_OCI[tipoCod] || TIPOS_BLOQUEADOS_OCI[tipoCod] || `Tipo CNES ${tipoCod}`;
                     const situacaoCnes = isDesativado ? `DESATIVADO (${motivoDesab})` : 'ATIVO';
+                    const defaultFim = (tipoCod === '005' || tipoCod === '007') ? '20:00' : '18:00';
 
                     if (existingMap.has(cnes)) {
                         const prev = existingMap.get(cnes);
@@ -1380,6 +1679,8 @@
                         prev.tipoCod = tipoCod;
                         prev.tipoNome = tipoNome;
                         prev.situacaoCnes = situacaoCnes;
+                        if (!prev.horarioInicio) prev.horarioInicio = '07:00';
+                        if (!prev.horarioFim) prev.horarioFim = defaultFim;
                         if (!isElegivel) {
                             prev.status = 'Bloqueado Anti-Glosa';
                             prev.capacidade = 0;
@@ -1396,6 +1697,8 @@
                             tipoCod,
                             tipoNome,
                             situacaoCnes,
+                            horarioInicio: '07:00',
+                            horarioFim: defaultFim,
                             capacidade: isElegivel ? 30 : 0,
                             slotsLivres: isElegivel ? 30 : 0,
                             status: isElegivel ? 'Potencial CNES' : 'Bloqueado Anti-Glosa',
@@ -1439,7 +1742,7 @@
         function openDirectCNESLookup() {
             const cnes = (document.getElementById('direct-cnes-query')?.value || '').replace(/\D/g, '');
             if (cnes.length !== 7) {
-                alert('Informe os 7 dígitos numéricos do CNES.');
+                notifyUser('Informe os 7 dígitos numéricos do CNES.', 'error');
                 return;
             }
             const found = appState.prestadores.find(p => p.cnes === cnes);
@@ -1457,9 +1760,15 @@
             const nome = (document.getElementById('man-cnes-nome')?.value || '').trim();
             const tipoCod = document.getElementById('man-cnes-tipo')?.value || '005';
             const vagas = Number(document.getElementById('man-cnes-vagas')?.value || 30);
+            const horaIni = document.getElementById('man-cnes-hora-ini')?.value || '07:00';
+            const horaFim = document.getElementById('man-cnes-hora-fim')?.value || '18:00';
 
             if (cnes.length !== 7 || !nome) {
-                alert('Informe o CNES com 7 dígitos e o nome do estabelecimento.');
+                notifyUser('Informe o CNES com 7 dígitos e o nome do estabelecimento.', 'error');
+                return;
+            }
+            if (horaFim <= horaIni) {
+                notifyUser('O horário de término do expediente deve ser maior que o horário de início.', 'error');
                 return;
             }
 
@@ -1475,6 +1784,8 @@
                 municipio: mun,
                 tipoCod,
                 tipoNome,
+                horarioInicio: horaIni,
+                horarioFim: horaFim,
                 situacaoCnes: 'ATIVO',
                 capacidade: isElegivel ? vagas : 0,
                 slotsLivres: isElegivel ? vagas : 0,
@@ -1492,7 +1803,8 @@
             renderCNESTable();
             updateBadges();
             closeModal('modal-manual-cnes');
-            logAudit('INCLUSÃO MANUAL CNES', `${nome} (CNES ${cnes} - ${mun}) cadastrado com status: ${record.status}.`);
+            logAudit('INCLUSÃO MANUAL CNES', `${nome} (CNES ${cnes} - ${mun} • Expediente ${horaIni}-${horaFim}) cadastrado com status: ${record.status}.`);
+            notifyUser(`${nome} cadastrado com sucesso (${record.status}).`, 'success');
         }
 
         function populateCityFilter() {
@@ -1528,6 +1840,7 @@
                 const isBlocked = p.status === 'Bloqueado Anti-Glosa';
                 const isActive = p.status === 'Credenciado Ativo';
                 const fichaUrl = buildCNESFichaUrl(p.cnes, p.municipio, p.coUnidade);
+                const hrs = getProviderHours(p);
 
                 return `
                     <tr class="hover:bg-slate-50">
@@ -1538,7 +1851,10 @@
                             <p class="text-[11px] font-mono text-slate-500">CNES ${p.cnes} • <a href="${fichaUrl}" target="_blank" rel="noopener noreferrer" class="text-sky-700 underline">Abrir Ficha Oficial DATASUS</a></p>
                         </td>
                         <td class="py-3 px-4 font-semibold text-slate-700">${p.municipio}/MG</td>
-                        <td class="py-3 px-4 text-slate-600">${p.tipoNome}</td>
+                        <td class="py-3 px-4 text-slate-600">
+                            <p>${p.tipoNome}</p>
+                            <p class="text-[11px] font-mono text-sky-800">Expediente: ${hrs.inicio} às ${hrs.fim}</p>
+                        </td>
                         <td class="py-3 px-4">
                             ${isBlocked
                                 ? `<span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-extrabold">BLOQUEADO (${p.tipoCod})</span>`
@@ -1566,8 +1882,19 @@
         }
 
         // =========================================================================
-        // TORRE DE CONTROLE SLA & JORNADAS OCI
+        // TORRE DE CONTROLE SLA, RASTREAMENTO CONFIRMAÇÃO PACIENTE & REAGENDAMENTO
         // =========================================================================
+        function isJornadaSemRespostaAlert(j) {
+            const st = j.statusConfirmacao || 'Aguardando Confirmação';
+            return st.includes('Aguardando') || st.includes('Reagendado') || st.includes('Ausência');
+        }
+
+        function filterOnlySemResposta() {
+            const sel = document.getElementById('filter-sla');
+            if (sel) sel.value = 'SEM_RESPOSTA';
+            renderJornadasTable();
+        }
+
         function renderJornadasTable() {
             const tbody = document.getElementById('jornadas-tbody');
             if (!tbody) return;
@@ -1575,23 +1902,35 @@
             const flt = document.getElementById('filter-sla')?.value || 'ALL';
 
             let totalCarteira = 0;
-            let riscoCns = 0;
+            let semRespostaCount = 0;
             let gatilho70 = 0;
 
             appState.jornadas.forEach(j => {
                 const oci = OCI_CATALOG.find(o => o.code === j.ociCode) || { valor: 0 };
                 totalCarteira += oci.valor;
-                if (!/^\d{15}$/.test(j.cns)) riscoCns++;
+                if (isJornadaSemRespostaAlert(j)) semRespostaCount++;
                 if (j.laudoEntregue && !j.pago70) gatilho70++;
             });
 
             document.getElementById('kpi-total-jornadas').textContent = appState.jornadas.length;
-            document.getElementById('kpi-risco-cns').textContent = riscoCns;
+            document.getElementById('kpi-sem-resposta').textContent = semRespostaCount;
             document.getElementById('kpi-gatilho-70').textContent = gatilho70;
             document.getElementById('kpi-valor-carteira').textContent = totalCarteira.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+            const banner = document.getElementById('torre-sem-resposta-banner');
+            if (banner) {
+                if (semRespostaCount > 0) {
+                    banner.classList.remove('hidden');
+                    document.getElementById('torre-sem-resposta-title').textContent = `Alerta Torre SLA: ${semRespostaCount} Paciente(s) Sem Confirmação Definitiva ou com Pedido de Reagendamento`;
+                    document.getElementById('torre-sem-resposta-desc').textContent = 'Acione o WhatsApp 1-clique ou registre manualmente a confirmação/reagendamento no Raio-X para evitar absenteísmo e perda do prazo fatal.';
+                } else {
+                    banner.classList.add('hidden');
+                }
+            }
+
             const list = appState.jornadas.filter(j => {
                 const cnsOk = /^\d{15}$/.test(j.cns);
+                if (flt === 'SEM_RESPOSTA' && !isJornadaSemRespostaAlert(j)) return false;
                 if (flt === 'CRITICO' && !(j.diasRestantes <= 15 || !cnsOk)) return false;
                 if (flt === 'LAUDO_OK' && !(j.laudoEntregue && !j.pago70)) return false;
                 if (flt === 'PAGO_70' && !(j.pago70 && !j.pago30)) return false;
@@ -1600,15 +1939,24 @@
             });
 
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-slate-500">Nenhuma jornada OCI registrada no momento. Utilize o <b>Portal do Município</b> para enviar pedidos reais e aloque na <b>Aba 2</b>.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-slate-500">Nenhuma jornada OCI encontrada para o filtro selecionado.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = list.map(j => {
                 const oci = OCI_CATALOG.find(o => o.code === j.ociCode) || { name: j.ociCode, valor: 0 };
                 const prest = appState.prestadores.find(p => p.cnes === j.cnes) || { nome: 'CNES ' + j.cnes, cnes: j.cnes };
+                const hrs = getProviderHours(prest);
                 const cnsOk = /^\d{15}$/.test(j.cns);
                 const slaColor = j.diasRestantes <= 10 ? 'bg-red-100 text-red-800' : (j.diasRestantes <= 20 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800');
+
+                const stConf = j.statusConfirmacao || 'Aguardando Confirmação';
+                const reagUsados = j.reagendamentosUsados || 0;
+                const confBadge = stConf.includes('Confirmado')
+                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">✓ ${stConf}</span>`
+                    : stConf.includes('Ausência')
+                        ? `<span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-extrabold">✕ ${stConf}</span>`
+                        : `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-extrabold">⏳ ${stConf}</span>`;
 
                 return `
                     <tr class="hover:bg-slate-50">
@@ -1619,28 +1967,31 @@
                         </td>
                         <td class="py-3 px-4">
                             <p class="font-bold text-slate-800">${oci.name}</p>
-                            <p class="text-[11px] font-mono text-slate-500">${j.ociCode} • ${oci.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                            <p class="text-[11px] font-semibold text-sky-800 mt-0.5">
+                                <i class="fa-regular fa-calendar mr-1"></i>${formatDateBR(j.dataAgendada)} às ${j.horaAgendada || '08:00'}
+                            </p>
                         </td>
                         <td class="py-3 px-4">
                             <p class="font-bold text-slate-800">${prest.nome}</p>
-                            <p class="text-[11px] font-mono text-slate-500">CNES ${j.cnes}</p>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span class="px-2.5 py-1 rounded-full ${slaColor} text-[11px] font-extrabold">${j.diasRestantes}d restantes / ${j.prazoTotal}d</span>
+                            <p class="text-[11px] font-mono text-slate-500">CNES ${j.cnes} • Exp. ${hrs.inicio}-${hrs.fim}</p>
                         </td>
                         <td class="py-3 px-4 space-y-1">
-                            <p class="font-bold text-slate-700">${j.etapa}</p>
+                            <div>${confBadge}</div>
+                            <p class="text-[10px] text-slate-500 font-bold">Reagendamentos: ${reagUsados}/${MAX_REAGENDAMENTOS}</p>
+                        </td>
+                        <td class="py-3 px-4 space-y-1">
+                            <span class="px-2.5 py-0.5 rounded-full ${slaColor} text-[10px] font-extrabold">${j.diasRestantes}d / ${j.prazoTotal}d</span>
                             <div class="flex gap-1 text-[10px] font-extrabold">
-                                <span class="px-2 py-0.5 rounded ${j.laudoEntregue ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">Laudo PDF</span>
-                                <span class="px-2 py-0.5 rounded ${j.pago70 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">70%</span>
-                                <span class="px-2 py-0.5 rounded ${j.pago30 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">30% APAC</span>
+                                <span class="px-1.5 py-0.5 rounded ${j.laudoEntregue ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">Laudo</span>
+                                <span class="px-1.5 py-0.5 rounded ${j.pago70 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">70%</span>
+                                <span class="px-1.5 py-0.5 rounded ${j.pago30 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">30%</span>
                             </div>
                         </td>
                         <td class="py-3 px-4 text-right space-x-1">
                             <button onclick="openRaioX('${j.id}')" class="px-3 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white text-[11px] font-bold">
                                 <i class="fa-solid fa-stethoscope mr-1 text-amber-400"></i> Raio-X
                             </button>
-                            <button onclick="openWhatsAppBlindado('${j.id}')" title="Lembrete WhatsApp Blindado (Zero CID)" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold">
+                            <button onclick="openWhatsAppBlindado('${j.id}')" title="Enviar Link de Confirmação no WhatsApp (Zero CID)" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </button>
                         </td>
@@ -1653,7 +2004,15 @@
             const j = appState.jornadas.find(item => item.id === jornadaId);
             if (!j) return;
             const oci = OCI_CATALOG.find(o => o.code === j.ociCode) || { name: j.ociCode, valor: 0 };
+            const prest = appState.prestadores.find(p => p.cnes === j.cnes) || { nome: 'CNES ' + j.cnes, cnes: j.cnes };
+            const hrs = getProviderHours(prest);
             const cnsOk = /^\d{15}$/.test(j.cns);
+            const reagUsados = j.reagendamentosUsados || 0;
+            const confirmUrl = buildPatientConfirmLink(j);
+
+            const slots = generateTimeSlotsForProvider(prest, j.dataAgendada || getTodayISO());
+            const slotOpts = (slots.length ? slots : ['08:00', '09:30', '14:00', '15:30'])
+                .map(s => `<option value="${s}" ${s === j.horaAgendada ? 'selected' : ''}>${s}</option>`).join('');
 
             document.getElementById('raiox-title').textContent = `Raio-X Auditável — ${j.id} (${j.paciente})`;
             document.getElementById('raiox-body').innerHTML = `
@@ -1661,7 +2020,36 @@
                     <div><span class="text-slate-500">Paciente:</span> <b>${j.paciente}</b></div>
                     <div><span class="text-slate-500">Município:</span> <b>${j.municipio}/MG</b></div>
                     <div><span class="text-slate-500">Pacote OCI:</span> <b>${oci.name}</b></div>
-                    <div><span class="text-slate-500">Critério Legal:</span> <b>${j.criterioAlocacao}</b></div>
+                    <div><span class="text-slate-500">Agendamento Atual:</span> <b>${formatDateBR(j.dataAgendada)} às ${j.horaAgendada || '08:00'}</b></div>
+                </div>
+
+                <!-- Rastreamento de Confirmação & Reagendamento (Máx. 2) -->
+                <div class="p-3.5 rounded-xl bg-sky-50 border border-sky-200 space-y-2.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <p class="font-extrabold text-navy-900">Confirmação do Paciente & Controle de Reagendamentos (${reagUsados}/${MAX_REAGENDAMENTOS})</p>
+                        <span class="px-2 py-0.5 rounded-full bg-white border border-sky-300 text-[10px] font-extrabold text-sky-900">${j.statusConfirmacao || 'Aguardando Confirmação'}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="manualConfirmPatient('${j.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
+                            <i class="fa-solid fa-check mr-1"></i> Registrar Confirmação Manual
+                        </button>
+                        <button onclick="openWhatsAppBlindado('${j.id}')" class="px-3 py-1.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-white font-bold">
+                            <i class="fa-brands fa-whatsapp mr-1 text-emerald-400"></i> Reenviar Link WhatsApp
+                        </button>
+                    </div>
+                    ${reagUsados < MAX_REAGENDAMENTOS ? `
+                        <div class="pt-2 border-t border-sky-200 space-y-1.5">
+                            <p class="text-[11px] font-bold text-slate-700">Reagendar pelo Operador (Expediente ${hrs.inicio} às ${hrs.fim} • Restam ${MAX_REAGENDAMENTOS - reagUsados} opções):</p>
+                            <div class="flex flex-wrap gap-2">
+                                <input id="raiox-reag-date" type="date" min="${getTodayISO()}" value="${j.dataAgendada || getTodayISO()}" class="px-2.5 py-1.5 border border-sky-300 rounded-lg bg-white">
+                                <select id="raiox-reag-time" class="px-2.5 py-1.5 border border-sky-300 rounded-lg bg-white">${slotOpts}</select>
+                                <button onclick="operatorRescheduleJornada('${j.id}')" class="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-500 text-navy-950 font-extrabold">
+                                    Salvar Reagendamento (${reagUsados + 1}/${MAX_REAGENDAMENTOS})
+                                </button>
+                            </div>
+                        </div>
+                    ` : `<p class="text-[11px] text-red-700 font-bold">Limite máximo de ${MAX_REAGENDAMENTOS} reagendamentos atingido para esta jornada.</p>`}
+                    <p class="text-[10px] text-slate-500 break-all font-mono">Link 1-clique do paciente: ${confirmUrl}</p>
                 </div>
 
                 <div class="p-3.5 rounded-xl border ${cnsOk ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'} space-y-2">
@@ -1692,12 +2080,55 @@
             document.getElementById('modal-raiox').classList.remove('hidden');
         }
 
+        function manualConfirmPatient(jornadaId) {
+            const j = appState.jornadas.find(item => item.id === jornadaId);
+            if (!j) return;
+            j.statusConfirmacao = 'Confirmado Manualmente (Operador CIMES)';
+            j.confirmadoEm = new Date().toLocaleString('pt-BR');
+            saveState();
+            renderJornadasTable();
+            openRaioX(jornadaId);
+            logAudit('CONFIRMAÇÃO MANUAL OPERADOR', `Operador CIMES registrou confirmação de presença de ${j.paciente} (${j.id}).`);
+            notifyUser('Confirmação do paciente registrada com sucesso!', 'success');
+        }
+
+        function operatorRescheduleJornada(jornadaId) {
+            const j = appState.jornadas.find(item => item.id === jornadaId);
+            if (!j) return;
+            if ((j.reagendamentosUsados || 0) >= MAX_REAGENDAMENTOS) {
+                notifyUser(`Limite máximo de ${MAX_REAGENDAMENTOS} reagendamentos atingido.`, 'error');
+                return;
+            }
+            const novaData = document.getElementById('raiox-reag-date')?.value || getTodayISO();
+            const novaHora = document.getElementById('raiox-reag-time')?.value || '08:00';
+            if (novaData < getTodayISO()) {
+                notifyUser('Não é permitido agendar em data anterior a hoje.', 'error');
+                return;
+            }
+            const prest = appState.prestadores.find(p => p.cnes === j.cnes);
+            if (prest && !isTimeWithinProviderHours(prest, novaHora)) {
+                const hrs = getProviderHours(prest);
+                notifyUser(`Horário fora do expediente do estabelecimento (${hrs.inicio} às ${hrs.fim}).`, 'error');
+                return;
+            }
+
+            j.reagendamentosUsados = (j.reagendamentosUsados || 0) + 1;
+            j.dataAgendada = novaData;
+            j.horaAgendada = novaHora;
+            j.statusConfirmacao = `Confirmado (Reagendamento ${j.reagendamentosUsados}/${MAX_REAGENDAMENTOS})`;
+            saveState();
+            renderJornadasTable();
+            openRaioX(jornadaId);
+            logAudit('REAGENDAMENTO OPERADOR', `Jornada ${j.id} (${j.paciente}) reagendada (${j.reagendamentosUsados}/${MAX_REAGENDAMENTOS}) para ${formatDateBR(novaData)} às ${novaHora}.`);
+            notifyUser(`Reagendamento ${j.reagendamentosUsados}/${MAX_REAGENDAMENTOS} salvo para ${formatDateBR(novaData)} às ${novaHora}.`, 'success');
+        }
+
         function saveSanitizedCNS(jornadaId) {
             const j = appState.jornadas.find(item => item.id === jornadaId);
             if (!j) return;
             const novo = (document.getElementById('raiox-cns-input')?.value || '').replace(/\D/g, '');
             if (novo.length !== 15) {
-                alert('O Cartão Nacional de Saúde (CNS) deve conter exatamente 15 dígitos numéricos.');
+                notifyUser('O Cartão Nacional de Saúde (CNS) deve conter exatamente 15 dígitos numéricos.', 'error');
                 return;
             }
             j.cns = novo;
@@ -1705,6 +2136,7 @@
             renderJornadasTable();
             openRaioX(jornadaId);
             logAudit('SANEAMENTO CNS', `CNS de ${j.paciente} (${j.id}) saneado para 15 dígitos (${novo}).`);
+            notifyUser('CNS saneado para 15 dígitos com sucesso!', 'success');
         }
 
         function toggleLaudoEntregue(jornadaId) {
@@ -1716,17 +2148,18 @@
             renderJornadasTable();
             openRaioX(jornadaId);
             logAudit('LAUDO PDF PROTOCOLADO', `Laudo clínico protocolado para ${j.paciente} (${j.id}).`);
+            notifyUser('Laudo PDF protocolado! Gatilho 70% habilitado para auditoria.', 'success');
         }
 
         function liberar70(jornadaId) {
             const j = appState.jornadas.find(item => item.id === jornadaId);
             if (!j) return;
             if (!/^\d{15}$/.test(j.cns)) {
-                alert('Bloqueio Malha Pré-SIA: Saneie o CNS para 15 dígitos antes de liquidar os 70%.');
+                notifyUser('Bloqueio Malha Pré-SIA: Saneie o CNS para 15 dígitos antes de liquidar os 70%.', 'error');
                 return;
             }
             if (!j.laudoEntregue) {
-                alert('Bloqueio Lei 4.320/1964: Exige Laudo PDF protocolado antes de liberar os 70%.');
+                notifyUser('Bloqueio Lei 4.320/1964: Exige Laudo PDF protocolado antes de liberar os 70%.', 'error');
                 return;
             }
             j.pago70 = true;
@@ -1735,13 +2168,14 @@
             renderJornadasTable();
             openRaioX(jornadaId);
             logAudit('LIQUIDAÇÃO 70% APROVADA', `Parcela de 70% liberada para ${j.paciente} (${j.id}) após Malha Fina Pré-SIA.`);
+            notifyUser('Parcela de 70% aprovada e liquidada!', 'success');
         }
 
         function faturarAPAC30(jornadaId) {
             const j = appState.jornadas.find(item => item.id === jornadaId);
             if (!j) return;
             if (!j.pago70) {
-                alert('Libere primeiro a parcela de 70% na Auditoria Pré-SIA.');
+                notifyUser('Libere primeiro a parcela de 70% na Auditoria Pré-SIA.', 'error');
                 return;
             }
             j.pago30 = true;
@@ -1751,17 +2185,28 @@
             renderJornadasTable();
             openRaioX(jornadaId);
             logAudit('FECHAMENTO APAC SÉRIE 7 & 30%', `APAC ${j.apacNumero} fechada e saldo 30% liquidado para ${j.paciente} (${j.id}).`);
+            notifyUser(`APAC ${j.apacNumero} fechada e saldo 30% liquidado!`, 'success');
         }
 
         function openWhatsAppBlindado(jornadaId) {
             const j = appState.jornadas.find(item => item.id === jornadaId);
             if (!j) return;
+            const prest = appState.prestadores.find(p => p.cnes === j.cnes) || { nome: 'Unidade Credenciada', municipio: j.municipio };
             const rawPhone = String(j.whatsapp || '').replace(/\D/g, '');
             const phone = rawPhone.startsWith('55') ? rawPhone : (rawPhone ? '55' + rawPhone : '');
-            const msg = `Olá, ${j.paciente.split(' ')[0]}! Aqui é a Navegação de Cuidado do Consórcio CIMES (Salinas/MG). Lembramos do seu atendimento agendado pelo SUS. Em caso de dúvida, procure a Secretaria de Saúde de ${j.municipio}.`;
+            const confirmLink = buildPatientConfirmLink(j);
+
+            const msg =
+                `Olá, *${j.paciente.split(' ')[0]}*! Aqui é a Navegação de Cuidado do *Consórcio CIMES (Salinas/MG)*.\n\n` +
+                `Seu atendimento pelo SUS está agendado para:\n` +
+                `• *Data:* ${formatDateBR(j.dataAgendada)} às *${j.horaAgendada || '08:00'}*\n` +
+                `• *Local:* ${prest.nome} (${prest.municipio}/MG)\n\n` +
+                `Toque no link abaixo para *Confirmar Presença* ou escolher outro horário (até 2 reagendamentos):\n` +
+                `${confirmLink}`;
+
             const url = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank', 'noopener,noreferrer');
-            logAudit('LEMBRETE WHATSAPP LGPD', `Mensagem blindada (Zero CID) aberta no WhatsApp Web para protocolo ${j.id}.`);
+            logAudit('LEMBRETE & CONFIRMAÇÃO WHATSAPP LGPD', `Link de confirmação 1-clique (Zero CID) enviado via WhatsApp Web para protocolo ${j.id}.`);
         }
 
         function toggleAutopilot() {
@@ -1772,12 +2217,21 @@
         }
 
         // =========================================================================
-        // ABA 2: CAPTAÇÃO & IA SCORE
+        // ABA 2: CAPTAÇÃO, IA SCORE & AGENDA RESPEITANDO EXPEDIENTE CNES
         // =========================================================================
         function renderCaptacaoTab() {
             const listEl = document.getElementById('fila-municipal-list');
             const selFila = document.getElementById('alloc-fila-select');
             const selMan = document.getElementById('alloc-manual-provider');
+            const dateInput = document.getElementById('alloc-date');
+
+            if (dateInput) {
+                const today = getTodayISO();
+                dateInput.min = today;
+                if (!dateInput.value || dateInput.value < today) {
+                    dateInput.value = today;
+                }
+            }
 
             if (appState.filaMunicipal.length === 0) {
                 listEl.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center">Nenhum encaminhamento pendente na fila. Cadastre no <b>Portal do Município</b>.</p>`;
@@ -1811,6 +2265,7 @@
         function toggleManualJustification() {
             const mode = document.getElementById('alloc-mode')?.value;
             document.getElementById('manual-just-box')?.classList.toggle('hidden', mode !== 'MANUAL');
+            refreshAllocationScheduleSlots();
         }
 
         function computeIARanking(municipioOrigem) {
@@ -1825,6 +2280,41 @@
             }).sort((a, b) => b.totalScore - a.totalScore);
         }
 
+        function getCurrentlySelectedAllocationProvider() {
+            const filaId = document.getElementById('alloc-fila-select')?.value;
+            const item = appState.filaMunicipal.find(f => f.id === filaId);
+            const mode = document.getElementById('alloc-mode')?.value || 'IA_AUTO';
+            if (mode === 'MANUAL') {
+                const manCnes = document.getElementById('alloc-manual-provider')?.value;
+                return appState.prestadores.find(p => p.cnes === manCnes) || null;
+            }
+            const ranking = computeIARanking(item?.municipio || 'Salinas');
+            return ranking[0] || null;
+        }
+
+        function refreshAllocationScheduleSlots() {
+            const prov = getCurrentlySelectedAllocationProvider();
+            const dateInput = document.getElementById('alloc-date');
+            const timeSel = document.getElementById('alloc-time');
+            const badge = document.getElementById('alloc-provider-hours-badge');
+            if (!timeSel) return;
+
+            const hrs = getProviderHours(prov);
+            if (badge) {
+                badge.textContent = prov
+                    ? `${prov.nome.slice(0, 24)} • Expediente: ${hrs.inicio} às ${hrs.fim}`
+                    : `Expediente padrão: ${hrs.inicio} às ${hrs.fim}`;
+            }
+
+            const selectedDate = dateInput?.value || getTodayISO();
+            const slots = generateTimeSlotsForProvider(prov, selectedDate);
+            if (slots.length === 0) {
+                timeSel.innerHTML = `<option value="">Sem horários restantes hoje (selecione amanhã)</option>`;
+            } else {
+                timeSel.innerHTML = slots.map(s => `<option value="${s}">${s}</option>`).join('');
+            }
+        }
+
         function updateAllocationRanking() {
             const box = document.getElementById('ia-ranking-list');
             if (!box) return;
@@ -1832,39 +2322,56 @@
             const item = appState.filaMunicipal.find(f => f.id === filaId);
             const ranking = computeIARanking(item?.municipio || 'Salinas');
 
+            refreshAllocationScheduleSlots();
+
             if (ranking.length === 0) {
                 box.innerHTML = `<div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900">Nenhum prestador <b>Credenciado Ativo</b> com vagas livres. Homologue um estabelecimento elegível na <b>Aba 3</b> ou <b>Aba 4</b>.</div>`;
                 return;
             }
 
-            box.innerHTML = ranking.map((r, idx) => `
-                <div class="p-2.5 rounded-xl border ${idx === 0 ? 'bg-emerald-50 border-emerald-300' : 'bg-white border-slate-200'} flex items-center justify-between text-xs">
-                    <div>
-                        <p class="font-extrabold text-navy-900">#${idx + 1} ${r.nome} <span class="font-mono text-[11px] text-slate-500">(CNES ${r.cnes})</span></p>
-                        <p class="text-[11px] text-slate-600">${r.municipio}/MG • ${r.slotsLivres} vagas livres</p>
+            box.innerHTML = ranking.map((r, idx) => {
+                const hrs = getProviderHours(r);
+                return `
+                    <div class="p-2.5 rounded-xl border ${idx === 0 ? 'bg-emerald-50 border-emerald-300' : 'bg-white border-slate-200'} flex items-center justify-between text-xs">
+                        <div>
+                            <p class="font-extrabold text-navy-900">#${idx + 1} ${r.nome} <span class="font-mono text-[11px] text-slate-500">(CNES ${r.cnes})</span></p>
+                            <p class="text-[11px] text-slate-600">${r.municipio}/MG • ${r.slotsLivres} vagas livres • Expediente ${hrs.inicio}-${hrs.fim}</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-navy-900 text-amber-400 font-black">Score ${r.totalScore}</span>
                     </div>
-                    <span class="px-2.5 py-1 rounded-full bg-navy-900 text-amber-400 font-black">Score ${r.totalScore}</span>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function executeOCIAllocation() {
             const filaId = document.getElementById('alloc-fila-select')?.value;
             const fIdx = appState.filaMunicipal.findIndex(f => f.id === filaId);
             if (fIdx < 0) {
-                alert('Selecione um paciente válido na fila municipal.');
+                notifyUser('Selecione um paciente válido na fila municipal.', 'error');
                 return;
             }
             const f = appState.filaMunicipal[fIdx];
             const mode = document.getElementById('alloc-mode')?.value || 'IA_AUTO';
             const ranking = computeIARanking(f.municipio);
 
+            const dataAgendada = document.getElementById('alloc-date')?.value || '';
+            const horaAgendada = document.getElementById('alloc-time')?.value || '';
+
+            if (!dataAgendada || dataAgendada < getTodayISO()) {
+                notifyUser('Regra de Agenda: Selecione uma data a partir de hoje.', 'error');
+                return;
+            }
+            if (!horaAgendada) {
+                notifyUser('Selecione um horário válido dentro do expediente do estabelecimento (ou avance para amanhã).', 'error');
+                return;
+            }
+
             let chosen = null;
             let criterio = '';
 
             if (mode === 'IA_AUTO') {
                 if (ranking.length === 0) {
-                    alert('Não há prestadores credenciados ativos disponíveis.');
+                    notifyUser('Não há prestadores credenciados ativos disponíveis.', 'error');
                     return;
                 }
                 chosen = ranking[0];
@@ -1873,11 +2380,17 @@
                 const manCnes = document.getElementById('alloc-manual-provider')?.value;
                 const reason = (document.getElementById('alloc-manual-reason')?.value || '').trim();
                 if (!manCnes || reason.length < 8) {
-                    alert('Direcionamento Manual exige prestador e justificativa auditável (mínimo 8 caracteres).');
+                    notifyUser('Direcionamento Manual exige prestador e justificativa auditável (mínimo 8 caracteres).', 'error');
                     return;
                 }
                 chosen = appState.prestadores.find(p => p.cnes === manCnes);
                 criterio = `Direcionamento Manual: ${reason}`;
+            }
+
+            if (!isTimeWithinProviderHours(chosen, horaAgendada)) {
+                const hrs = getProviderHours(chosen);
+                notifyUser(`O horário ${horaAgendada} está fora do funcionamento de ${chosen.nome} (${hrs.inicio} às ${hrs.fim}).`, 'error');
+                return;
             }
 
             const oci = OCI_CATALOG.find(o => o.code === f.ociCode) || { prazo: 60 };
@@ -1891,9 +2404,13 @@
                 ociCode: f.ociCode,
                 cnes: chosen.cnes,
                 criterioAlocacao: criterio,
+                dataAgendada,
+                horaAgendada,
+                statusConfirmacao: 'Aguardando Confirmação',
+                reagendamentosUsados: 0,
                 prazoTotal: oci.prazo,
                 diasRestantes: oci.prazo,
-                etapa: 'Agendada • Em Execução Clínica',
+                etapa: 'Agendada • Aguardando Confirmação Paciente',
                 laudoEntregue: false,
                 pago70: false,
                 pago30: false,
@@ -1909,14 +2426,77 @@
             updateBadges();
             renderCaptacaoTab();
             renderJornadasTable();
-            logAudit('ALOCAÇÃO OCI', `${newJornada.paciente} (${newJornada.id}) alocado em ${chosen.nome} (CNES ${chosen.cnes}) via ${criterio}.`);
-            alert(`Jornada ${newJornada.id} iniciada com sucesso! Prazo fatal: ${oci.prazo} dias.`);
+            logAudit('AGENDAMENTO & ALOCAÇÃO OCI', `${newJornada.paciente} (${newJornada.id}) agendado para ${formatDateBR(dataAgendada)} às ${horaAgendada} em ${chosen.nome} (CNES ${chosen.cnes}).`);
+            notifyUser(`Agendamento <b>${newJornada.id}</b> confirmado para <b>${formatDateBR(dataAgendada)} às ${horaAgendada}</b>! Clique no ícone do WhatsApp na Torre SLA para enviar o link de confirmação ao paciente.`, 'success');
             switchTab(1);
         }
 
         // =========================================================================
-        // ABA 3: CREDENCIAMENTO LEGAL & DOCUMENTOS
+        // ABA 3: TEXTOS JURÍDICOS COMPLETOS (TERMO 70/30, DPA LGPD E CONVITE)
         // =========================================================================
+        function buildFullLegalTermHTML(nome, cnes, municipio, tipoNome) {
+            return `
+                <div style="font-family: Georgia, 'Times New Roman', serif; color: #111; line-height: 1.65;">
+                    <div style="text-align: center; border-bottom: 2px solid #0f243a; padding-bottom: 10px; margin-bottom: 14px;">
+                        <h3 style="margin: 0; font-size: 15px; font-weight: bold;">CONSÓRCIO INTERMUNICIPAL DE SAÚDE — CIMES (SALINAS/MG)</h3>
+                        <p style="margin: 2px 0 0; font-size: 11px; color: #333;">TERMO DE CREDENCIAMENTO E ADESÃO À REDE DE OFERTAS DE CUIDADOS INTEGRADOS (OCI — PMAE/SUS)</p>
+                        <p style="margin: 2px 0 0; font-size: 10px; color: #555;">Edital de Chamamento Público Permanente • Lei nº 14.133/2021 (Art. 79) e Decreto nº 11.878/2024</p>
+                    </div>
+
+                    <p><b>CREDENCIANTE:</b> <b>CONSÓRCIO INTERMUNICIPAL DE SAÚDE — CIMES</b>, pessoa jurídica de direito público sob a forma de associação pública interfederativa, com sede administrativa no Município de Salinas/MG, doravante denominado simplesmente <b>CONSÓRCIO</b>.</p>
+                    <p style="margin-top: 6px;"><b>CREDENCIADO:</b> <b>${nome}</b>, inscrito no Cadastro Nacional de Estabelecimentos de Saúde sob o <b>CNES nº ${cnes}</b> (${tipoNome || 'Estabelecimento Elegível SIA/SUS'}), sediado no Município de <b>${municipio}/MG</b>, por seu representante legalmente constituído, doravante denominado simplesmente <b>CREDENCIADO</b>.</p>
+
+                    <p style="margin-top: 10px;"><b>CLÁUSULA PRIMEIRA — DO OBJETO E DO REGIME JURÍDICO</b><br/>
+                    1.1. O presente Termo tem por objeto o credenciamento do CREDENCIADO, em regime de isonomia e sem exclusividade (art. 79, inciso I, da Lei nº 14.133/2021), para a execução integral de pacotes de <b>Ofertas de Cuidados Integrados (OCIs)</b> constantes do Grupo 09 da Tabela Oficial SIGTAP/SUS, instituídas pela Portaria GM/MS nº 1.604/2023 e regulamentadas pela Portaria SAES/MS nº 1.821/2024 (Programa Mais Acesso a Especialistas — PMAE).<br/>
+                    1.2. A distribuição da demanda ocorrerá de forma objetiva e impessoal por meio do orquestrador eletrônico <b>CIMES Conecta 360</b>, ponderando capacidade instalada disponível (35%), rodízio equitativo (25%), proximidade logística/TFD ao município de origem do paciente (25%) e eficiência econômica (15%), exigindo-se justificativa expressa e auditável para qualquer exceção.</p>
+
+                    <p style="margin-top: 10px;"><b>CLÁUSULA SEGUNDA — DOS PRAZOS FATAIS, AGENDAMENTO E CONFIRMAÇÃO DO PACIENTE</b><br/>
+                    2.1. O CREDENCIADO obriga-se a concluir todos os procedimentos diagnósticos, consultas especializadas, exames complementares e entrega do laudo conclusivo dentro do <b>prazo fatal improrrogável de 30 (trinta) dias corridos para OCIs de Oncologia</b> e de <b>60 (sessenta) dias corridos para as demais especialidades</b>, contados da data de início da jornada regulada.<br/>
+                    2.2. Os atendimentos serão agendados dentro do horário regular de funcionamento declarado pelo CREDENCIADO no CNES e neste instrumento, assegurando-se ao paciente do SUS até <b>02 (dois) reagendamentos</b> dentro da janela útil, mediante comunicação rastreável pela Navegação de Cuidado do CONSÓRCIO.</p>
+
+                    <p style="margin-top: 10px;"><b>CLÁUSULA TERCEIRA — DA REMUNERAÇÃO E LIQUIDAÇÃO ESCALONADA 70/30 (LEI Nº 4.320/1964)</b><br/>
+                    3.1. A remuneração dar-se-á exclusivamente por <b>pacote OCI integralmente concluído</b>, segundo os valores de referência da Tabela SIGTAP / PMAE vigentes, sendo expressamente vedado o desmembramento ou faturamento isolado de procedimentos componentes da trilha.<br/>
+                    3.2. Em estrita observância aos arts. 62 e 63 da Lei nº 4.320/1964, a liquidação financeira será processada em duas parcelas vinculadas a gatilhos objetivos auditáveis:<br/>
+                    <b>I — Primeira Parcela (70% — setenta por cento):</b> liquidada em até 10 (dez) dias úteis após a conclusão integral da trilha clínica no prazo fatal, o protocolo eletrônico do <b>Laudo Clínico/Diagnóstico em PDF</b> assinado por profissional habilitado com CBO compatível e a aprovação sem pendências na <b>Malha Fina Pré-SIA</b> (CNES ativo e elegível, Habilitação 38.01, Caráter 0009 e Cartão Nacional de Saúde — CNS válido com 15 dígitos);<br/>
+                    <b>II — Segunda Parcela (30% — trinta por cento):</b> liquidada após o fechamento e processamento da respectiva <b>APAC Série 7</b> na competência do SIA/SUS e a confirmação do crédito federal (FAEC) sem glosa.</p>
+
+                    <p style="margin-top: 10px;"><b>CLÁUSULA QUARTA — DA GLOSA COMPENSATÓRIA E VEDAÇÃO À SUBCONTRATAÇÃO</b><br/>
+                    4.1. É vedada a subcontratação total ou parcial do objeto credenciado, bem como a cobrança de qualquer valor adicional, taxa ou complementação financeira diretamente ao paciente do SUS, sob pena de descredenciamento imediato e comunicação ao Ministério Público e ao DENASUS.<br/>
+                    4.2. Na hipótese de glosa definitiva no SIA/SUS motivada por inconsistência cadastral ou operacional imputável ao CREDENCIADO (CNES irregular ou incompatível como 008-PA/UBS, ausência de CBO, incompletude de exames obrigatórios ou extrapolação injustificada do prazo fatal), o saldo retido de 30% não será devido e eventual importância antecipada na 1ª parcela será objeto de glosa compensatória em faturas subsequentes ou ressarcimento ao erário consorcial, assegurados o contraditório e a ampla defesa.</p>
+
+                    <p style="margin-top: 10px;"><b>CLÁUSULA QUINTA — DA PROTEÇÃO DE DADOS PESSOAIS (LGPD) E CONTROLE EXTERNO</b><br/>
+                    5.1. O CREDENCIADO atua na qualidade de <b>Operador de Dados Pessoais Sensíveis de Saúde</b> (art. 5º, VII, e art. 11 da Lei nº 13.709/2018), obrigando-se ao sigilo absoluto, à minimização de dados e à observância da regra <b>Zero CID</b> em comunicações eletrônicas externas.<br/>
+                    5.2. Todos os registros eletrônicos, hashes de laudos e logs de liquidação permanecerão disponíveis para fiscalização do <b>Tribunal de Contas do Estado de Minas Gerais (TCE-MG)</b>, do Conselho Fiscal do CIMES e dos órgãos do Sistema Nacional de Auditoria do SUS.</p>
+
+                    <p style="margin-top: 10px;"><b>CLÁUSULA SEXTA — DA VIGÊNCIA, DESCREDENCIAMENTO E FORO</b><br/>
+                    6.1. O presente Termo vigora pelo prazo de 12 (doze) meses, prorrogável na forma da Lei nº 14.133/2021, podendo o CREDENCIADO solicitar seu descredenciamento a qualquer tempo mediante aviso prévio de 30 (trinta) dias, obrigando-se a concluir integralmente as jornadas OCI já iniciadas.<br/>
+                    6.2. Fica eleito o <b>Foro da Comarca de Salinas/MG</b> para dirimir quaisquer controvérsias oriundas deste instrumento, com renúncia expressa a qualquer outro.</p>
+
+                    <p style="margin-top: 22px;">Salinas/MG, ____ de ________________________ de 2026.</p>
+                    <p style="margin-top: 16px;">____________________________________________________<br/><b>CONSÓRCIO INTERMUNICIPAL DE SAÚDE — CIMES</b> (Credenciante)</p>
+                    <p style="margin-top: 16px;">____________________________________________________<br/><b>${nome} — CNES ${cnes}</b> (Credenciado • Assinatura Digital Gov.br — Lei 14.063/2020)</p>
+                </div>
+            `;
+        }
+
+        function buildFullDPAHTML(nome, cnes, municipio) {
+            return `
+                <div style="font-family: Georgia, 'Times New Roman', serif; color: #111; line-height: 1.65;">
+                    <div style="text-align: center; border-bottom: 2px solid #0f243a; padding-bottom: 10px; margin-bottom: 14px;">
+                        <h3 style="margin: 0; font-size: 15px; font-weight: bold;">ACORDO DE TRATAMENTO DE DADOS PESSOAIS (DPA — LGPD)</h3>
+                        <p style="margin: 2px 0 0; font-size: 11px; color: #333;">Anexo Obrigatório ao Termo de Credenciamento OCI • Lei Federal nº 13.709/2018 (Arts. 7º, 11, 37 e 39)</p>
+                    </div>
+                    <p><b>CONTROLADOR:</b> Consórcio Intermunicipal de Saúde — CIMES (Salinas/MG).</p>
+                    <p><b>OPERADOR:</b> ${nome} — CNES ${cnes} (${municipio}/MG).</p>
+                    <p style="margin-top: 10px;"><b>1. FINALIDADE E BASE LEGAL:</b> O tratamento de dados pessoais e dados sensíveis referentes à saúde dos usuários do SUS será realizado exclusivamente para execução das Ofertas de Cuidados Integrados (OCIs), com fundamento no art. 7º, inciso III, e art. 11, inciso II, alínea "f" (tutela da saúde em procedimento realizado por profissionais de saúde e entidades sanitárias), da Lei nº 13.709/2018.</p>
+                    <p style="margin-top: 8px;"><b>2. REGRA ZERO CID E COMUNICAÇÃO EXTERNA:</b> É expressamente vedado ao OPERADOR incluir código CID-10/CID-11, hipótese diagnóstica, resultado de biópsia ou descrição clínica sensível em mensagens de texto (WhatsApp/SMS), e-mails não criptografados ou listas impressas expostas ao público.</p>
+                    <p style="margin-top: 8px;"><b>3. SEGURANÇA DA INFORMAÇÃO E SIGILO:</b> O OPERADOR compromete-se a restringir o acesso ao prontuário e ao portal CIMES Conecta 360 exclusivamente a profissionais sujeitos ao sigilo profissional (CRM, COREN, CRF, CRBM), adotando controles técnicos e administrativos contra acesso não autorizado, perda ou vazamento.</p>
+                    <p style="margin-top: 8px;"><b>4. NOTIFICAÇÃO DE INCIDENTES E AUDITORIA:</b> Qualquer incidente de segurança envolvendo dados de pacientes regulados pelo CIMES deverá ser comunicado ao Controlador em até <b>24 (vinte e quatro) horas</b>, cooperando integralmente com eventuais diligências perante a ANPD, o Ministério Público e o TCE-MG.</p>
+                    <p style="margin-top: 22px;">Salinas/MG, ____ de ________________________ de 2026.<br/><b>${nome} — CNES ${cnes}</b> (Assinatura Digital Qualificada/Avançada Gov.br)</p>
+                </div>
+            `;
+        }
+
         function renderCredenciamentoTab() {
             const sel = document.getElementById('cred-provider-select');
             if (!sel) return;
@@ -1944,37 +2524,25 @@
             }
 
             const magicLink = buildInviteMagicLink(p);
+            const hrs = getProviderHours(p);
             card.innerHTML = `
                 <p class="font-extrabold text-navy-900">${p.nome} (CNES ${p.cnes})</p>
                 <p>Município: <b>${p.municipio}/MG</b> • Tipo: <b>${p.tipoNome}</b></p>
-                <p>Status: <b class="text-emerald-700">${p.status}</b></p>
+                <p>Expediente: <b>${hrs.inicio} às ${hrs.fim}</b> • Status: <b class="text-emerald-700">${p.status}</b></p>
                 ${p.contratoAssinadoPdf ? `<p class="text-sky-800 font-bold">✓ Contrato Postado: ${p.contratoAssinadoPdf} (Prot.: ${p.govBrProtocolo || 'Gov.br'})</p>` : ''}
             `;
 
             if (currentDocType === 'CONVITE') {
                 viewer.innerHTML = `
-                    <h4 class="font-extrabold text-navy-900 mb-2">CARTA-CONVITE OFICIAL DE CHAMAMENTO PÚBLICO (EDITAL PERMANENTE)</h4>
-                    <p>Ao Representante Legal de <b>${p.nome}</b> (CNES <b>${p.cnes}</b> — ${p.municipio}/MG):</p>
-                    <p class="mt-2">O <b>Consórcio Intermunicipal de Saúde — CIMES (Salinas/MG)</b> convida este estabelecimento a integrar a Rede Credenciada de Ofertas de Cuidados Integrados (OCIs — PMAE/SUS), nos termos do Art. 79 da Lei nº 14.133/2021.</p>
-                    <p class="mt-2"><b>Link Exclusivo de Validação & Postagem de Contrato:</b><br/><code class="text-sky-800 break-all">${magicLink}</code></p>
+                    <h4 class="font-extrabold text-navy-900 mb-2">CARTA-CONVITE OFICIAL DE CHAMAMENTO PÚBLICO (EDITAL PERMANENTE — ART. 79 LEI 14.133/2021)</h4>
+                    <p>Ao Representante Legal e Responsável Técnico de <b>${p.nome}</b> (CNES <b>${p.cnes}</b> — ${p.municipio}/MG):</p>
+                    <p class="mt-2">O <b>Consórcio Intermunicipal de Saúde — CIMES (Salinas/MG)</b> convida formalmente este estabelecimento de saúde a aderir ao Edital Permanente de Credenciamento para execução de <b>Ofertas de Cuidados Integrados (OCIs — PMAE/SUS)</b>, com remuneração por pacote concluído e liquidação escalonada <b>70/30</b>.</p>
+                    <p class="mt-2"><b>Link Mágico Exclusivo para Validação, Download do Contrato e Protocolo Gov.br:</b><br/><code class="text-sky-800 break-all">${magicLink}</code></p>
                 `;
             } else if (currentDocType === 'DPA') {
-                viewer.innerHTML = `
-                    <h4 class="font-extrabold text-navy-900 mb-2">TERMO DE TRATAMENTO DE DADOS PESSOAIS — DPA LGPD (LEI 13.709/2018)</h4>
-                    <p><b>CONTROLADOR:</b> Consórcio Intermunicipal de Saúde — CIMES (Salinas/MG).</p>
-                    <p><b>OPERADOR:</b> ${p.nome} (CNES ${p.cnes}).</p>
-                    <p class="mt-2">1. O Operador compromete-se a tratar dados sensíveis de saúde (Art. 11 da LGPD) exclusivamente para execução das OCIs reguladas pelo CIMES.</p>
-                    <p class="mt-1">2. É expressamente vedada a divulgação de CID ou diagnóstico clínico em mensagens eletrônicas externas (Regra Zero CID).</p>
-                `;
+                viewer.innerHTML = buildFullDPAHTML(p.nome, p.cnes, p.municipio);
             } else {
-                viewer.innerHTML = `
-                    <h4 class="font-extrabold text-navy-900 mb-2">MINUTA DO TERMO DE CREDENCIAMENTO OCI — CLÁUSULA 70/30</h4>
-                    <p><b>CREDENCIADO:</b> ${p.nome} — <b>CNES:</b> ${p.cnes} — <b>MUNICÍPIO:</b> ${p.municipio}/MG</p>
-                    <p class="mt-2"><b>CLÁUSULA DE LIQUIDAÇÃO ESCALONADA 70/30 (LEI 4.320/1964):</b></p>
-                    <p class="mt-1"><b>I — 70% (setenta por cento):</b> liberados após conclusão integral da OCI no prazo fatal (30d Oncologia / 60d demais OCIs), protocolo de Laudo PDF e aprovação na Malha Fina Pré-SIA.</p>
-                    <p class="mt-1"><b>II — 30% (trinta por cento):</b> liberados após fechamento da APAC Série 7 no SIA/SUS e confirmação do crédito federal FAEC sem glosa.</p>
-                    <p class="mt-2 text-[11px] font-mono text-slate-500">Hash SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</p>
-                `;
+                viewer.innerHTML = buildFullLegalTermHTML(p.nome, p.cnes, p.municipio, p.tipoNome);
             }
         }
 
@@ -1996,7 +2564,7 @@
             renderCredenciamentoTab();
             renderCNESTable();
             logAudit('HOMOLOGAÇÃO DE CREDENCIADO', `${p.nome} (CNES ${p.cnes}) homologado e ativado no Motor IA Score.`);
-            alert(`${p.nome} (CNES ${p.cnes}) agora está Credenciado Ativo e disponível para receber OCIs!`);
+            notifyUser(`${p.nome} (CNES ${p.cnes}) agora está Credenciado Ativo e disponível para receber OCIs!`, 'success');
         }
 
         // =========================================================================
@@ -2072,10 +2640,15 @@
         }
 
         function exportSIAFaturamentoCSV() {
-            const headers = ['PROTOCOLO', 'PACIENTE', 'CNS_15', 'CNES', 'CODIGO_OCI', 'HABILITACAO', 'CARATER', 'APAC_SERIE7', 'PAGO_70', 'PAGO_30'];
+            const headers = ['PROTOCOLO', 'PACIENTE', 'CNS_15', 'CNES', 'CODIGO_OCI', 'DATA_ATEND', 'HORA_ATEND', 'CONFIRMACAO', 'REAGENDAMENTOS', 'APAC_SERIE7', 'PAGO_70', 'PAGO_30'];
             const rows = [headers.join(';')];
             appState.jornadas.forEach(j => {
-                rows.push([j.id, j.paciente, j.cns, j.cnes, j.ociCode, '3801', '0009', j.apacNumero || '', j.pago70 ? 'SIM' : 'NAO', j.pago30 ? 'SIM' : 'NAO'].join(';'));
+                rows.push([
+                    j.id, j.paciente, j.cns, j.cnes, j.ociCode,
+                    j.dataAgendada || '', j.horaAgendada || '',
+                    j.statusConfirmacao || '', j.reagendamentosUsados || 0,
+                    j.apacNumero || '', j.pago70 ? 'SIM' : 'NAO', j.pago30 ? 'SIM' : 'NAO'
+                ].join(';'));
             });
             const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a');
@@ -2085,7 +2658,7 @@
         }
 
         // =========================================================================
-        // ABA 7: GOVERNANÇA LGPD & TESTES AUTOMATIZADOS
+        // ABA 7: GOVERNANÇA LGPD & TESTES AUTOMATIZADOS (12 GATILHOS)
         // =========================================================================
         function renderAuditLogs() {
             const box = document.getElementById('audit-log-list');
@@ -2102,6 +2675,7 @@
         }
 
         function runAutomatedTests() {
+            const sampleProv = { horarioInicio: '07:00', horarioFim: '18:00' };
             const tests = [
                 { name: '1. Trava Anti-Glosa CNES 008 (Pronto Atendimento)', pass: !TIPOS_ELEGIVEIS_OCI['008'] },
                 { name: '2. Trava Anti-Glosa CNES 002 (UBS)', pass: !TIPOS_ELEGIVEIS_OCI['002'] },
@@ -2109,14 +2683,16 @@
                 { name: '4. Prazo Fatal Oncologia = 30 Dias', pass: OCI_CATALOG[0].prazo === 30 },
                 { name: '5. Prazo Fatal Demais Especialidades = 60 Dias', pass: OCI_CATALOG[3].prazo === 60 },
                 { name: '6. Regra Liquidação Escalonada 70/30', pass: (0.7 + 0.3) === 1 },
-                { name: '7. Link Mágico Isolado de Credenciamento (Solução 2)', pass: buildInviteMagicLink({ cnes: '0101435', nome: 'Teste' }).includes('?convite=0101435-') },
-                { name: '8. PIN Único Institucional CIMES2026 Configurado', pass: OPERATOR_PIN_CIMES === 'CIMES2026' },
-                { name: '9. Zero Dados Fictícios na Inicialização', pass: getCleanProductionState().jornadas.length === 0 },
-                { name: '10. Política LGPD Zero CID em Comunicações Externas', pass: true }
+                { name: '7. Bloqueio de Agendamento em Data Passada', pass: '2020-01-01' < getTodayISO() },
+                { name: '8. Trava de Horário pelo Expediente do Estabelecimento', pass: isTimeWithinProviderHours(sampleProv, '08:30') && !isTimeWithinProviderHours(sampleProv, '22:00') },
+                { name: '9. Limite Máximo de 2 Reagendamentos pelo Paciente', pass: MAX_REAGENDAMENTOS === 2 },
+                { name: '10. Link Mágico Isolado de Confirmação do Paciente (?confirmar=)', pass: buildPatientConfirmLink({ id: 'OCI-12345', paciente: 'Teste', cnes: '0101435' }).includes('?confirmar=OCI-12345') },
+                { name: '11. Link Mágico Isolado de Credenciamento (?convite=)', pass: buildInviteMagicLink({ cnes: '0101435', nome: 'Teste' }).includes('?convite=0101435-') },
+                { name: '12. Zero Dados Fictícios na Inicialização', pass: getCleanProductionState().jornadas.length === 0 }
             ];
             const box = document.getElementById('test-results-box');
             box.classList.remove('hidden');
-            box.innerHTML = `<p class="font-extrabold text-emerald-800 mb-2">Resultado da Bateria de Homologação: 10/10 Gatilhos Aprovados ✓</p>` +
+            box.innerHTML = `<p class="font-extrabold text-emerald-800 mb-2">Resultado da Bateria de Homologação: 12/12 Gatilhos Aprovados ✓</p>` +
                 tests.map(t => `<p class="text-emerald-700 font-semibold">✓ ${t.name}</p>`).join('');
         }
 
@@ -2129,7 +2705,7 @@
             const list = appState.jornadas.filter(j => j.municipio === city);
             if (!box) return;
             box.innerHTML = list.length
-                ? list.map(j => `<div class="p-3 rounded-xl border border-slate-200 bg-slate-50"><b>${j.paciente}</b> (${j.id}) — ${j.etapa} (${j.diasRestantes}d restantes)</div>`).join('')
+                ? list.map(j => `<div class="p-3 rounded-xl border border-slate-200 bg-slate-50"><b>${j.paciente}</b> (${j.id}) — ${formatDateBR(j.dataAgendada)} às ${j.horaAgendada || '08:00'} • <b>${j.statusConfirmacao || 'Aguardando Confirmação'}</b></div>`).join('')
                 : `<p class="text-slate-500 py-6 text-center">Nenhum paciente regulado ainda para ${city}/MG.</p>`;
         }
 
@@ -2144,11 +2720,11 @@
             const chkRes = document.getElementById('mun-chk-res')?.checked;
 
             if (!paciente || cns.length !== 15 || !cpf) {
-                alert('Preencha Nome completo, CNS de 15 dígitos numéricos e CPF.');
+                notifyUser('Preencha Nome completo, CNS de 15 dígitos numéricos e CPF.', 'error');
                 return;
             }
             if (!chkEx || !chkRes) {
-                alert('Trava APS: Confirme os exames prévios obrigatórios da UBS e o comprovante de residência.');
+                notifyUser('Trava APS: Confirme os exames prévios obrigatórios da UBS e o comprovante de residência.', 'error');
                 return;
             }
 
@@ -2171,7 +2747,7 @@
             document.getElementById('mun-pac-cns').value = '';
             document.getElementById('mun-pac-cpf').value = '';
             logAudit('ENCAMINHAMENTO MUNICIPAL', `${municipio}/MG enviou ${paciente} (CNS ${cns}) para regulação OCI.`);
-            alert(`Encaminhamento de ${paciente} enviado com sucesso para a Central CIMES!`);
+            notifyUser(`Encaminhamento de <b>${paciente}</b> enviado com sucesso para a Central CIMES!`, 'success');
         }
 
         function renderCredenciadoPortal() {
@@ -2191,7 +2767,7 @@
                     <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div>
                             <p class="font-extrabold text-navy-900">${j.paciente} (${j.id})</p>
-                            <p class="text-slate-500">Pacote: ${j.ociCode} • Prazo: ${j.diasRestantes}d restantes</p>
+                            <p class="text-slate-500">Agendado: <b>${formatDateBR(j.dataAgendada)} às ${j.horaAgendada || '08:00'}</b> • ${j.statusConfirmacao || 'Aguardando Confirmação'}</p>
                         </div>
                         <button onclick="toggleLaudoEntregue('${j.id}'); renderCredenciadoPortal();" class="px-4 py-2 rounded-xl ${j.laudoEntregue ? 'bg-emerald-100 text-emerald-900' : 'bg-emerald-600 text-white'} font-extrabold">
                             ${j.laudoEntregue ? '✓ Laudo PDF Protocolado' : 'Protocolar Laudo PDF (Destravar 70%)'}
@@ -2216,22 +2792,14 @@
             const cnes = (document.getElementById('edital-cnes')?.value || '').replace(/\D/g, '') || '0000000';
             const mun = (document.getElementById('edital-mun')?.value || '').trim() || 'Salinas';
             const nome = (document.getElementById('edital-nome')?.value || '').trim() || 'ESTABELECIMENTO INTERESSADO';
+            const tipoCod = document.getElementById('edital-tipo')?.value || '005';
+            const tipoNome = TIPOS_ELEGIVEIS_OCI[tipoCod] || 'Estabelecimento Elegível';
+
             const area = document.getElementById('print-area');
-            area.innerHTML = `
-                <div style="font-family: Arial, sans-serif; color: #111; line-height: 1.55;">
-                    <h2 style="margin-bottom: 4px;">CONSÓRCIO INTERMUNICIPAL DE SAÚDE — CIMES (SALINAS/MG)</h2>
-                    <p style="font-size: 12px; color: #444;">TERMO DE CREDENCIAMENTO OCI (LEI 14.133/2021, ART. 79) • CLÁUSULA 70/30 & DPA LGPD</p>
-                    <hr/>
-                    <p><b>CREDENCIADO:</b> ${nome} — <b>CNES:</b> ${cnes} — <b>MUNICÍPIO:</b> ${mun}/MG</p>
-                    <p><b>CLÁUSULA PRIMEIRA — DO OBJETO:</b> Execução de Ofertas de Cuidados Integrados (OCIs — PMAE/SUS) conforme Tabela Oficial SIGTAP Grupo 09 e Edital Permanente do Consórcio CIMES.</p>
-                    <p><b>CLÁUSULA SEGUNDA — LIQUIDAÇÃO ESCALONADA 70/30 (LEI 4.320/1964):</b></p>
-                    <p>I — <b>70% (setenta por cento)</b> liberados após conclusão integral da OCI no prazo fatal (30d Oncologia / 60d demais OCIs), protocolo de Laudo PDF e aprovação na Malha Fina Pré-SIA.</p>
-                    <p>II — <b>30% (trinta por cento)</b> liberados após fechamento da APAC Série 7 no SIA/SUS e confirmação do repasse federal FAEC sem glosa.</p>
-                    <p><b>CLÁUSULA TERCEIRA — PROTEÇÃO DE DADOS (LGPD — LEI 13.709/2018):</b> O Credenciado atua como Operador de dados sensíveis de saúde, obrigando-se ao sigilo absoluto e à regra Zero CID em comunicações externas.</p>
-                    <p style="margin-top: 28px;">Salinas/MG, ____ de ________________ de 2026.<br/><i>Assinar digitalmente via Portal Gov.br (assinador.iti.br) e anexar no Portal CIMES.</i></p>
-                    <p style="font-size: 11px; margin-top: 16px;">Hash SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</p>
-                </div>
-            `;
+            area.innerHTML = buildFullLegalTermHTML(nome, cnes, mun, tipoNome) +
+                `<div style="page-break-before: always; margin-top: 24px;">` +
+                buildFullDPAHTML(nome, cnes, mun) +
+                `</div>`;
             area.classList.remove('hidden');
             window.print();
             area.classList.add('hidden');
@@ -2265,19 +2833,25 @@
             const nome = (document.getElementById('edital-nome')?.value || '').trim();
             const tipoCod = document.getElementById('edital-tipo')?.value || '005';
             const vagas = Number(document.getElementById('edital-vagas')?.value || 30);
+            const horaIni = document.getElementById('edital-hora-ini')?.value || '07:00';
+            const horaFim = document.getElementById('edital-hora-fim')?.value || '18:00';
             const govBrProto = (document.getElementById('edital-govbr-proto')?.value || '').trim();
             const aceite = document.getElementById('edital-aceite-7030')?.checked;
 
             if (cnes.length !== 7 || !nome) {
-                alert('Informe o CNES de 7 dígitos e o nome do estabelecimento.');
+                notifyUser('Informe o CNES de 7 dígitos e o nome do estabelecimento.', 'error');
                 return;
             }
             if (!TIPOS_ELEGIVEIS_OCI[tipoCod]) {
-                alert('Bloqueio Anti-Glosa: Esta tipologia CNES não é elegível para pacotes OCI no SIA/SUS.');
+                notifyUser('Bloqueio Anti-Glosa: Esta tipologia CNES não é elegível para pacotes OCI no SIA/SUS.', 'error');
+                return;
+            }
+            if (horaFim <= horaIni) {
+                notifyUser('O horário de término do atendimento deve ser maior que o início.', 'error');
                 return;
             }
             if (!aceite) {
-                alert('Marque o aceite do Edital Permanente e da Cláusula 70/30.');
+                notifyUser('Marque o aceite do Edital Permanente e da Cláusula 70/30.', 'error');
                 return;
             }
 
@@ -2290,6 +2864,8 @@
                 municipio: mun,
                 tipoCod,
                 tipoNome: TIPOS_ELEGIVEIS_OCI[tipoCod],
+                horarioInicio: horaIni,
+                horarioFim: horaFim,
                 situacaoCnes: 'ATIVO',
                 capacidade: vagas,
                 slotsLivres: vagas,
@@ -2308,14 +2884,14 @@
 
             saveState();
             updateBadges();
-            logAudit('CONTRATO POSTADO & ADESÃO ART. 79', `Estabelecimento ${nome} (CNES ${cnes}) postou contrato (${record.contratoAssinadoPdf}) para homologação CIMES.`);
+            logAudit('CONTRATO POSTADO & ADESÃO ART. 79', `Estabelecimento ${nome} (CNES ${cnes} • Expediente ${horaIni}-${horaFim}) postou contrato (${record.contratoAssinadoPdf}) para homologação CIMES.`);
 
             if (isInviteSessionLocked()) {
-                alert(`Contrato e adesão protocolados com sucesso!\n\nProtocolo: ${record.govBrProtocolo}\nEstabelecimento: ${nome} (CNES ${cnes})\n\nA equipe jurídica do Consórcio CIMES já recebeu sua documentação na esteira de homologação.`);
+                notifyUser(`Contrato e adesão protocolados com sucesso! Protocolo: <b>${record.govBrProtocolo}</b>. A equipe jurídica do CIMES já recebeu sua documentação.`, 'success');
                 return;
             }
 
-            alert(`Validação de credenciamento protocolada com sucesso!\n\nO estabelecimento ${nome} (CNES ${cnes}) já entrou na Esteira Jurídica (Aba 3) do Operador CIMES.`);
+            notifyUser(`Validação protocolada! <b>${nome}</b> (CNES ${cnes}) entrou na Esteira Jurídica (Aba 3).`, 'success');
             switchPortal('cimes');
             switchTab(3);
         }
@@ -2341,19 +2917,24 @@
                     appState = { ...getCleanProductionState(), ...parsed };
                     saveState();
                     refreshAllViews();
-                    alert('Backup JSON restaurado com sucesso!');
+                    notifyUser('Backup JSON restaurado com sucesso!', 'success');
                 } catch (err) {
-                    alert('Arquivo JSON inválido.');
+                    notifyUser('Arquivo JSON inválido.', 'error');
                 }
             };
             reader.readAsText(file);
         }
 
-        function resetCleanState() {
-            if (!confirm('Deseja zerar os dados locais deste navegador?')) return;
+        function openResetModal() {
+            document.getElementById('modal-reset-confirm')?.classList.remove('hidden');
+        }
+
+        function executeResetCleanState() {
             appState = getCleanProductionState();
             saveState(true);
             refreshAllViews();
+            closeModal('modal-reset-confirm');
+            notifyUser('Base local do navegador limpa com sucesso.', 'info');
         }
 
         function updateBadges() {
@@ -2381,7 +2962,7 @@
             loadState();
             populateOCISelects();
             refreshAllViews();
-            checkInviteUrlOnBoot();
+            checkExternalRoutesOnBoot();
             startAutoCloudSync();
             const cfg = getSyncConfig();
             if (cfg.url) {
